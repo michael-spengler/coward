@@ -2,14 +2,9 @@ import {
   connectWebSocket,
   isWebSocketCloseEvent,
   WebSocket,
-} from "https://deno.land/std/ws/mod.ts";
-import {
-  blue,
-  green,
-  red,
-  bold,
-  reset,
-} from "https://deno.land/std/fmt/colors.ts";
+
+  green, red, blue, bold, reset
+} from "../../deps.ts";
 import { Versions, Discord, Endpoints } from "../util/Constants.ts";
 
 import { Client } from "../Client.ts";
@@ -82,18 +77,7 @@ export default class Gateway {
         break;
     }
 
-    switch (message.t) {
-      case "READY":
-        /**
-				 * Fired when the Client is ready
-				 * @event Client#ready
-				 */
-        this.client.emit("ready", null);
-        break;
-      case "MESSAGE_CREATE":
-        this.client.emit("messageCreate", new Message(message.d, this.client));
-        break;
-    }
+	this.client.handle(message);
   }
 
   private async createError(str: string) {

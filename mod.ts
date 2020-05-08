@@ -11,6 +11,6 @@ export { GuildNewsChannel } from "./src/classes/GuildNewsChannel.ts"; // TODO(fo
 export { GuildStoreChannel } from "./src/classes/GuildStoreChannel.ts"; // TODO(fox-cat): see above; contemplate
 export { GuildTextChannel } from "./src/classes/GuildTextChannel.ts";
 export { GuildVoiceChannel } from "./src/classes/GuildVoiceChannel.ts";
-export { Member } from "./src/classes/Message.ts";
+export { Message } from "./src/classes/Message.ts";
 export { Role } from "./src/classes/Role.ts";
 export { User } from "./src/classes/User.ts";

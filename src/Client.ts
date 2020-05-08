@@ -1,4 +1,4 @@
-import EventEmitter from "https://deno.land/std/node/events.ts";
+import { EventEmitter } from "../deps.ts";
 
 import { Versions, Discord, Endpoints } from "./util/Constants.ts";
 import Gateway from "./gateway/WebsocketHandler.ts";
@@ -9,8 +9,14 @@ import { Message } from "./Classes.ts";
  * Class representing the main client
  * @extends EventEmitter
  *
- *       import { Coward } from "../coward/mod.ts";
+ *       import { Coward } from "https://deno.land/x/coward/mod.ts";
  *       const client = new Coward("TOKEN_GOES_HERE");
+ *
+ *       client.on("ready", () => {
+ * 		 	console.log("READY!");
+ *       })
+ *
+ *       client.connect();
  */
 export class Client extends EventEmitter {
   private _userAgent: string =
@@ -28,8 +34,8 @@ export class Client extends EventEmitter {
     this.gateway.connect();
   }
 
-  /** Create a message in a channel */
-  createMessage(channelID: string, content: string): Promise<Message> {
+  /** Post a message in a channel */
+  postMessage(channelID: string, content: string): Promise<Message> {
     return new Promise(async (resolve, reject) => {
       this.postData(
         Discord.API + Endpoints.CHANNEL_MESSAGES(channelID),
@@ -50,5 +56,24 @@ export class Client extends EventEmitter {
       body: JSON.stringify(data),
     });
     return response.json();
+  }
+
+  async handle(message: any) {
+	  switch(message.t) {
+		  case "READY":
+	        /**
+			 * Fired when the Client is ready
+			 * @event Coward#ready
+			 */
+	        this.emit("ready", null);
+	        break;
+	      case "MESSAGE_CREATE":
+		  	/**
+			 * Fired when a message is created
+			 * @event Coward#messageCreate
+			 */
+	        this.emit("messageCreate", new Message(message.d, this));
+	        break;
+	  }
   }
 }
