@@ -8,7 +8,7 @@ export class Message {
 	public author: string; //TODO: User Object
 	public timestamp: string;
 
-	constructor(data: object, client: Client) {
+	constructor(data: any, client: Client) {
 		this.id = data.id;
 		this.content = data.content;
 		this.channel = data.channel_id;
