@@ -2,7 +2,7 @@ import { connectWebSocket, isWebSocketCloseEvent, WebSocket } from "https://deno
 import { blue, green, red, bold, reset} from "https://deno.land/std/fmt/colors.ts";
 import { Versions, Discord, Endpoints } from '../util/Constants.ts';
 
-import Client from "../Client.ts";
+import { Client } from "../Client.ts";
 
 export default class Gateway {
 	public sock!: WebSocket;
@@ -13,7 +13,7 @@ export default class Gateway {
 	public async connect(): Promise<void> {
 		try {
 			this.sock = await connectWebSocket(`${Discord.GATEWAY}/v=${Versions.GATEWAY}`);
-			console.log(green("Successfully connected to websocket.")); //TODO: Remove these types of messages
+			console.log(green("Successfully connected to websocket.")); // TODO(fox-cat): Remove these types of messages or make them optional with a debug parameter
 
 			for await (const msg of this.sock) {
 				if(typeof msg === "string") {
@@ -55,11 +55,25 @@ export default class Gateway {
 			case 0:
 				this.sequence = message.s;
 				break;
+			case 1:
+				this.sock.send(JSON.stringify({
+					op: 1,
+					d: this.sequence
+				}))
+				break;
 			case 10:
-				//HELLO!
-				console.log(message.d.heartbeat_interval);
 				this.heartbeat(message.d.heartbeat_interval);
 				this.identify();
+				break;
+		}
+
+		switch(message.t) {
+			case "READY":
+				/**
+				 * Fired when the Client is ready
+				 * @event Client#ready
+				 */
+				this.client.emit('ready', null)
 				break;
 		}
 	}

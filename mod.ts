@@ -1,2 +1,1 @@
-import Client from "./src/Client.ts";
-export default Client;
+export { Client as Coward } from "./src/Client.ts"

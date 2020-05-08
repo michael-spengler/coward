@@ -1,6 +1,7 @@
-import Client from "./src/Client.ts";
+import { Client } from "../Client.ts";
 
-export default class Message {
+/** Class representing a message */
+export class Message {
 	public id: string;
 	public content: string;
 	public channel: string; //TODO: Channel Object
