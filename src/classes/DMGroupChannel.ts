@@ -9,15 +9,15 @@ import { DMChannel } from "./DMChannel.ts";
  * @extends DMChannel
  */
 export class DMGroupChannel extends DMChannel {
-	public name: string;
-	public icon: string;
-	public owner_id: string; // TODO(fox-cat): user object
+  public name: string;
+  public icon: string;
+  public owner_id: string; // TODO(fox-cat): user object
 
-	constructor(data: object, client: Client) {
-		super(object, client);
+  constructor(data: object, client: Client) {
+    super(object, client);
 
-		this.name = data.name || null;
-		this.icon = data.icon || null;
-		this.owner_id = data.owner_id;
-	}
+    this.name = data.name || null;
+    this.icon = data.icon || null;
+    this.owner_id = data.owner_id;
+  }
 }
