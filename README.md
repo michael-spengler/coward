@@ -18,7 +18,4 @@ client.connect()
 
 ## License
 
-Please refer to
-
-<license>
-</license>
+Please refer to [LICENSE](LICENSE)
