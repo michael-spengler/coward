@@ -9,7 +9,7 @@ Coward is not ready for any proper usage yet.
 ## Example
 
 ```typescript
-import Coward from 'https://denopkg.com/fox-cat/coward/mod.ts'
+import { Coward } from 'https://denopkg.com/fox-cat/coward/mod.ts'
 
 let client = new Coward("TOKEN_GO_HERE")
 
