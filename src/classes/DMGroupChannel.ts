@@ -13,8 +13,8 @@ export class DMGroupChannel extends DMChannel {
   public icon: string;
   public owner_id: string; // TODO(fox-cat): user object
 
-  constructor(data: object, client: Client) {
-    super(object, client);
+  constructor(data: any, client: Client) {
+    super(data, client);
 
     this.name = data.name || null;
     this.icon = data.icon || null;

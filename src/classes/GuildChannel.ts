@@ -14,14 +14,14 @@ export class GuildChannel extends Channel {
   public parent_id: string; // TODO(fox-cat): channel category object ????
   //public permission_overwrites: Array<>; // TODO(fox-cat): this whole thing
 
-  constructor(data: object, client: Client) {
+  constructor(data: any, client: Client) {
     super(data, client);
 
     this.name = data.name;
     this.guild = data.guild_id;
     this.position = data.position;
     this.nsfw = data.nsfw;
-    this.parent_id = parent_id || null;
+    this.parent_id = data.parent_id || null;
     //this.permission_overwrites = data.permission_overwrites;
   }
 }

@@ -10,10 +10,10 @@ export class Guild {
 
   //public channels: Map<GuildChannel>;
 
-  constructor(data: object, client: Client) {
+  constructor(data: any, client: Client) {
     this.id = data.id;
-    this.user = data.username;
-    this.discriminator = data.discriminator;
-    this.bot = data.bot || false;
+    this.name = data.name;
+	this.ownerID = data.ownerID; // TODO: owner user object ??
+	this.region = data.region;
   }
 }

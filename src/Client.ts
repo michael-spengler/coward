@@ -3,7 +3,7 @@ import EventEmitter from "https://deno.land/std/node/events.ts";
 import { Versions, Discord, Endpoints } from "./util/Constants.ts";
 import Gateway from "./gateway/WebsocketHandler.ts";
 
-import { Message } from "./classes/Message.ts";
+import { Message } from "./Classes.ts";
 
 /**
  * Class representing the main client
@@ -35,12 +35,8 @@ export class Client extends EventEmitter {
         Discord.API + Endpoints.CHANNEL_MESSAGES(channelID),
         { content: content, file: null, embed: {} },
       )
-        .then((data: any) => {
-          resolve(new Message(data, this));
-        })
-        .catch((err: any) => {
-          reject(err);
-        });
+        .then((data: any) => { resolve(new Message(data, this)); })
+        .catch((err: any) => { reject(err); });
     });
   }
 

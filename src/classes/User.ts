@@ -7,9 +7,9 @@ export class User {
   public discriminator: string;
   public bot: boolean;
 
-  constructor(data: object, client: Client) {
+  constructor(data: any, client: Client) {
     this.id = data.id;
-    this.user = data.username;
+    this.username = data.username;
     this.discriminator = data.discriminator;
     this.bot = data.bot || false;
   }

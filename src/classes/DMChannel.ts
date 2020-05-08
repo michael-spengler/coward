@@ -11,12 +11,12 @@ export class DMChannel extends Channel {
   public recipients: Array<User>;
   public last_message_id: string; // TODO(fox-cat): contemplate message object here?
 
-  constructor(data: object, client: Client) {
-    super(object, client);
+  constructor(data: any, client: Client) {
+    super(data, client);
 
-    let arr = [];
+    let arr: Array<any> = [];
     for (let i in data.recipients) {
-      arr[i] = new User(data.recipients[i], client);
+      arr[<any>i] = new User(data.recipients[i], client);
     }
     this.recipients = arr;
     this.last_message_id = data.last_message_id;

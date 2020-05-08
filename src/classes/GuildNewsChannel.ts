@@ -11,7 +11,7 @@ export class GuildNewsChannel extends GuildChannel {
   public topic: string;
   public last_message_id: string; // TODO(fox-cat): contemplate message object here?
 
-  constructor(data: object, client: Client) {
+  constructor(data: any, client: Client) {
     super(data, client);
 
     this.topic = data.topic || null;

@@ -14,7 +14,7 @@ export class GuildTextChannel extends GuildChannel {
 
   // TODO(fox-cat): Map of messages in a channel? (contemplate ^_^)
 
-  constructor(data: object, client: Client) {
+  constructor(data: any, client: Client) {
     super(data, client);
 
     this.rate_limit_per_user = data.rate_limit_per_user;

@@ -1,5 +1,6 @@
 import { Client } from "../Client.ts";
 
+/** Class representing a Role */
 export class Role {
   public id: string;
   public name: string;
@@ -8,7 +9,7 @@ export class Role {
   public managed: boolean;
   public mentionable: boolean;
 
-  constructor(data, client) {
+  constructor(data: any, client: Client) {
     this.id = data.id;
     this.name = data.name;
     this.color = data.color;

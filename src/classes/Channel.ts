@@ -6,7 +6,7 @@ export class Channel {
   public id: string;
   public type: number;
 
-  constructor(data: object, client: Client) {
+  constructor(data: any, client: Client) {
     this.id = data.id;
     this.type = data.type;
   }
