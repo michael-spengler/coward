@@ -61,7 +61,7 @@ export class Client extends EventEmitter {
   async handle(message: any) {
 	  switch(message.t) {
 		  case "READY":
-	        /**
+		  	/**
 			 * Fired when the Client is ready
 			 * @event Coward#ready
 			 */
