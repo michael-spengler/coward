@@ -161,6 +161,7 @@ export class Client extends EventEmitter {
 		}
 		if(data !== undefined) json.body = JSON.stringify(data);
 		const response = await fetch(Discord.API + url, json);
+		if(response.status == 204) { return null; }
 		return response.json();
 	}
 }
