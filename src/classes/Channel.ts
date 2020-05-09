@@ -1,16 +1,6 @@
 import { Client } from "../Client.ts";
 import { GuildTextChannel, DMChannel, GuildVoiceChannel, DMGroupChannel, GuildChannelCategory, GuildNewsChannel, GuildStoreChannel } from "../Classes.ts";
 
-export enum Type {
-	GUILD_TEXT_CHANNEL,
-	DM_CHANNEL,
-	GUILD_VOICE_CHANNEL,
-	DM_GROUP_CHANNEL,
-	GUILD_CHANNEL_CATEGORY,
-	GUILD_NEWS_CHANNEL,
-	GUILD_STORE_CHANNEL
-}
-
 /** Class representing a channel */
 export class Channel {
 	public id: string;
@@ -23,25 +13,25 @@ export class Channel {
 
 	static new(data: any, client: Client) {
 		switch(data.type) {
-			case Type.GUILD_TEXT_CHANNEL:
+			case 0:
 				return new GuildTextChannel(data, client);
 				break;
-			case Type.DM_CHANNEL:
+			case 1:
 				return new DMChannel(data, client);
 				break;
-			case Type.GUILD_VOICE_CHANNEL:
+			case 2:
 				return new GuildVoiceChannel(data, client);
 				break;
-			case Type.DM_GROUP_CHANNEL:
+			case 3:
 				return new DMGroupChannel(data, client);
 				break;
-			case Type.GUILD_CHANEL_CATEGORY:
+			case 4:
 				return new GuildChannelCategory(data, client);
 				break;
-			case Type.GUILD_NEWS_CHANNEL:
+			case 5:
 				return new GuildNewsChannel(data, client);
 				break;
-			case GUILD_STORE_CHANNEL:
+			case 6:
 				return new GuildStoreChannel(data, client);
 				break;
 		}
