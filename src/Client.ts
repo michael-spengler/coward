@@ -225,7 +225,7 @@ export class Client extends EventEmitter {
 	}
 }
 
-namespace Coward {
+export namespace Coward {
 	export interface postChannelOptions {
 		name: string,
 		type: number,
