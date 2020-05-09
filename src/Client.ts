@@ -35,12 +35,13 @@ export class Client extends EventEmitter {
 	}
 
 	/** Post a Channel */
-	postChannel(guildID:string, options: Client.postChannelOptions): void {
+
+	postChannel(guildID:string, options: FunOptions.postChannel): void {
 		this.request( "POST", Endpoints.GUILD_CHANNELS(guildID), options )
 	}
 
 	/** Modify a Channel */
-	modifyChannel(channelID: string, options: Client.modChannelOptions): void {
+	modifyChannel(channelID: string, options: FunOptions.modChannel): void {
 		this.request( "PATCH", Endpoints.CHANNEL(channelID), options );
 	} // TODO: Promise<Channel>
 
@@ -225,8 +226,8 @@ export class Client extends EventEmitter {
 }
 
 /** Namespace for functions */
-export namespace Client {
-	export interface postChannelOptions {
+export namespace FunOptions {
+	export interface postChannel {
 		name: string,
 		type: number,
 		position?: number,
@@ -239,7 +240,7 @@ export namespace Client {
 		parent_id?: string
 	}
 
-	export interface modChannelOptions {
+	export interface modChannel {
   	  name?: string,
   	  type?: number,
   	  position?: number,
