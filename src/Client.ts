@@ -3,7 +3,7 @@ import { EventEmitter } from "../deps.ts";
 import { Versions, Discord, Endpoints } from "./util/Constants.ts";
 import Gateway from "./gateway/WebsocketHandler.ts";
 
-import { Guild, GuildMember, Message, User, Role } from "./Classes.ts";
+import { Guild, GuildMember, DMChannel, DMGroupChannel, Message, User, Role } from "./Classes.ts";
 
 /**
  * Class representing the main client
@@ -23,6 +23,11 @@ export class Client extends EventEmitter {
 	`DiscordBot (https://github.com/fox-cat/Client), ${Versions.THIS}`;
 	private gateway: Gateway;
 
+	private guilds: Map<string, Guild> = new Map<string, Guild>();
+	private dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>();
+	private dmGroupChannels: Map<string, DMGroupChannel> = new Map<string, DMGroupChannel>();
+	private users: Map<string, User> = new Map<string, User>();
+
 	/** Create a Client */
 	public constructor(private token: string) {
 		super();
@@ -35,13 +40,12 @@ export class Client extends EventEmitter {
 	}
 
 	/** Post a Channel */
-
-	postChannel(guildID:string, options: FunOptions.postChannel): void {
+	postChannel(guildID:string, options: Options.postChannel): void {
 		this.request( "POST", Endpoints.GUILD_CHANNELS(guildID), options )
 	}
 
 	/** Modify a Channel */
-	modifyChannel(channelID: string, options: FunOptions.modChannel): void {
+	modifyChannel(channelID: string, options: Options.modifyChannel): void {
 		this.request( "PATCH", Endpoints.CHANNEL(channelID), options );
 	} // TODO: Promise<Channel>
 
@@ -51,15 +55,31 @@ export class Client extends EventEmitter {
 	}
 
 	/** Post a message in a channel */
-	postMessage(channelID: string, content: string): Promise<Message> {
+	postMessage(channelID: string, content: string | Options.postMessage): Promise<Message> {
+		if(typeof content === "string") { content = { content: content } }
 		return new Promise(async (resolve, reject) => {
-			this.request( "POST", Endpoints.CHANNEL_MESSAGES(channelID), { content: content, file: null, embed: {} })
-			.then((data: any) => { resolve(new Message(data, this)); })
-			.catch((err: any) => { reject(err); });
+			this.request( "POST", Endpoints.CHANNEL_MESSAGES(channelID), content )
+				.then((data: any) => { resolve(new Message(data, this)); })
+				.catch((err: any) => { reject(err); });
 		});
 	}
 
-	private async request(method: string, url: string, data?: any) {
+	/** Modify a message in a channel */
+	modifyMessage(channelID: string, messageID: string, content: string | Options.modifyMessage): Promise<Message> {
+		if(typeof content === "string") { content = { content: content } }
+		return new Promise(async (resolve, reject) => {
+			this.request( "PATCH", Endpoints.CHANNEL_MESSAGE(channelID, messageID), content )
+				.then((data: any) => { resolve(new Message(data, this)); })
+				.catch((err: any) => { reject(err); })
+		})
+	}
+
+	/** Delete a message in a channel */
+	deleteMessage(channelID: string, messageID: string) {
+		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE(channelID, messageID) );
+	}
+
+	async request(method: string, url: string, data?: any) {
 		if(!data) data == null;
 		const response = await fetch(Discord.API + url, {
 			method: method,
@@ -71,162 +91,10 @@ export class Client extends EventEmitter {
 		});
 		return response.json();
 	}
-
-	public handle(message: any) {
-		switch(message.t) {
-			case "READY":
-			/**
-			 * Fired when the Client is ready
-			 * @event Client#ready
-			 */
-			this.emit("ready", null);
-			break;
-			case "CHANNEL_CREATE":
-				/**
-				 * Fired when a Channel is created.
-				 * @event Client#channelCreate
-				 */
-				this.emit("channelCreate", null); // TODO: Determine channel type and create channel from there.
-				break;
-			case "CHANNEL_UPDATE":
-				/**
-				 * Fired when a Channel is updated.
-				 * @event Client#channelUpdate
-				 */
-				this.emit("channelUpdate", null);
-				break;
-			case "CHANNEL_DELETE":
-				/**
-				 * Fired when a Channel is deleted.
-				 * @event Client#channelDelete
-				 */
-				this.emit("channelDelete", null);
-				break;
-			// TODO: CHANNEL_PINS_UPDATE
-			case "GUILD_CREATE":
-				/**
-				 * Fired when
-				 *  - The client is initally connecting.
-				 *  - A guild becomes available to the client.
-				 *  - The client joins a guild.
-				 * @event Client#guildCreate
-				 */
-				this.emit("guildCreate", new Guild(message.d, this));
-				break;
-			case "GUILD_DELETE":
-				/**
-				 * Fired when
-				 *  - The client leaves or is removed from a guild.
-				 *  - A guild becomes unavailable.
-				 * @event Client#guildDelete
-				 */
-				this.emit("guildDelete", new Guild(message.d, this));
-				break;
-			case "GUILD_BAN_ADD":
-				/**
-				 * Fired when a user is banned from the guild.
-				 * @event Client#guildBanAdd
-				 */
-				this.emit("guildBanAdd", message.d.guild_id, new User(message.d.user, this));
-				break;
-			case "GUILD_BAN_REMOVE":
-				/**
-				 * Fired when a user is unbanned from the guild.
-				 * @event Client#guildBanAdd
-				 */
-				this.emit("guildBanRemove", message.d.guild_id, new User(message.d.user, this));
-				break;
-			case "GUILD_EMOJIS_UPDATE":
-				//TODO: GUILD_EMOJIS_UPDATE
-				break;
-			case "GUILD_INTEGRATIONS_UPDATE":
-				//TODO: GUILD_INTEGRATIONS_UPDATE
-				break;
-			case "GUILD_MEMBER_ADD":
-				/**
-				 * Fired when a new user joins the guild.
-				 * @event Client#guildMemberAdd
-				 */
-				this.emit("guildMemberAdd", message.d.guild_id, new GuildMember(message.d, this));
-				break;
-			case "GUILD_MEMBER_REMOVE":
-				/**
-				 * Fired when a user leaves or is removed from the guild.
-				 * @event Client#guildMemberRemove
-				 */
-				this.emit("guildMemberRemove", message.d.guild_id, new User(message.d, this));
-				break;
-			case "GUILD_MEMBER_UPDATE":
-				// TODO: https://discord.com/developers/docs/topics/gateway#guild-member-update
-				break;
-			case "GUILD_MEMBERS_CHUNK":
-				// TODO: https://discord.com/developers/docs/topics/gateway#guild-members-chunk
-				break;
-			case "GUILD_ROLE_CREATE":
-				/**
-				 * Fired when a role is created in a guild.
-				 * @event Client#guildRoleCreate
-				 */
-				this.emit("guildRoleCreate", message.d.guild_id, new Role(message.d.role, this));
-				break;
-			case "GUILD_ROLE_UPDATE":
-				/**
-				 * Fired when a role is deleted in a guild.
-				 * @event Client#guildRoleUpdate
-				 */
-				this.emit("guildRoleUpdate", message.d.guild_id, new Role(message.d.role, this));
-				break;
-			case "GUILD_ROLE_DELETE":
-				/**
-				 * Fired when a role is deleted in a guild.
-				 * @event Client#guildRoleDelete
-				 */
-				this.emit("guildRoleDelete", message.d.guild_id, message.d.role_id);
-				break;
-			case "INVITE_CREATE":
-				//TODO: https://discord.com/developers/docs/topics/gateway#invite-create
-				break;
-			case "INVITE_DELETE":
-				//TODO: https://discord.com/developers/docs/topics/gateway#invite-delete
-				break;
-			case "MESSAGE_CREATE":
-				/**
-				 * Fired when a message is created
-				 * @event Client#messageCreate
-				 */
-				this.emit("messageCreate", new Message(message.d, this));
-				break;
-			case "MESSAGE_UPDATE":
-				/**
-				 * Fired when a message is updated
-				 * @event Client#messageUpdate
-				 */
-				this.emit("messageUpdate", new Message(message.d, this));
-				break;
-			case "MESSAGE_DELETE":
-				/**
-				 * Fired when a message is deleted
-				 * @event Client#messageDelete
-				 */
-				this.emit("messageDelete", message.d.id, message.d.channel_id); //TODO
-				break;
-			case "MESSAGE_DELETE_BULK":
-				/**
-				 * Fired when mesages are deleted in bulk.
-				 * @event Client#messageDeleteBulk
-				 */
-				this.emit("messageDeleteBulk", message.d.ids, message.d.channel_id);
-				break;
-			case "MESSAGE_REACTION_ADD":
-				//TODO: https://discord.com/developers/docs/topics/gateway#message-reaction-add (and all other reactions)
-				break;
-			//TODO: All other ones lol
-		}
-	}
 }
 
 /** Namespace for functions */
-export namespace FunOptions {
+export namespace Options {
 	export interface postChannel {
 		name: string,
 		type: number,
@@ -240,16 +108,29 @@ export namespace FunOptions {
 		parent_id?: string
 	}
 
-	export interface modChannel {
-  	  name?: string,
-  	  type?: number,
-  	  position?: number,
-  	  topic?: string,
-  	  nsfw?: boolean,
-  	  rate_limit_per_user?: number,
-  	  bitrate?: number,
-  	  user_limit?: number,
-  	  //permission_overwrites?: Array<>,
-  	  parent_id?: string
+	export interface modifyChannel {
+		name?: string,
+		type?: number,
+		position?: number,
+		topic?: string,
+		nsfw?: boolean,
+		rate_limit_per_user?: number,
+		bitrate?: number,
+		user_limit?: number,
+		//permission_overwrites?: Array<>,
+		parent_id?: string
     }
+
+	export interface postMessage {
+		content?: string,
+		tts?: boolean,
+		// TODO file:
+		embed?: any
+	}
+
+	export interface modifyMessage {
+		content?: string,
+		// TODO: file
+		embed?: any
+	}
 }

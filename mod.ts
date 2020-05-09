@@ -1,5 +1,5 @@
 export { Client as Coward } from "./src/Client.ts";
-export { FunOptions } from "./src/Client.ts";
+export { Options } from "./src/Client.ts";
 
 export { Channel } from "./src/classes/Channel.ts";
 export { DMChannel } from "./src/classes/DMChannel.ts";

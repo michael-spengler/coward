@@ -8,7 +8,7 @@ import {
 import { Versions, Discord, Endpoints } from "../util/Constants.ts";
 
 import { Client } from "../Client.ts";
-import { Message } from "../classes/Message.ts";
+import { Guild, GuildMember, Message, User, Role, Channel } from "../Classes.ts";
 
 export default class Gateway {
   public sock!: WebSocket;
@@ -77,7 +77,156 @@ export default class Gateway {
         break;
     }
 
-	this.client.handle(message);
+	switch(message.t) {
+		case "READY":
+		/**
+		 * Fired when the Client is ready
+		 * @event Client#ready
+		 */
+		this.client.emit("ready", null);
+		break;
+		case "CHANNEL_CREATE":
+			/**
+			 * Fired when a Channel is created.
+			 * @event Client#channelCreate
+			 */
+			this.client.emit("channelCreate", Channel.create(message.d, this.client)); // TODO: Determine channel type and create channel from there.
+			break;
+		case "CHANNEL_UPDATE":
+			/**
+			 * Fired when a Channel is updated.
+			 * @event Client#channelUpdate
+			 */
+			this.client.emit("channelUpdate", Channel.create(message.d, this.client));
+			break;
+		case "CHANNEL_DELETE":
+			/**
+			 * Fired when a Channel is deleted.
+			 * @event Client#channelDelete
+			 */
+			this.client.emit("channelDelete", Channel.create(message.d, this.client));
+			break;
+		// TODO: CHANNEL_PINS_UPDATE
+		case "GUILD_CREATE":
+			/**
+			 * Fired when
+			 *  - The client is initally connecting.
+			 *  - A guild becomes available to the client.
+			 *  - The client joins a guild.
+			 * @event Client#guildCreate
+			 */
+			this.client.emit("guildCreate", new Guild(message.d, this.client));
+			break;
+		case "GUILD_DELETE":
+			/**
+			 * Fired when
+			 *  - The client leaves or is removed from a guild.
+			 *  - A guild becomes unavailable.
+			 * @event Client#guildDelete
+			 */
+			this.client.emit("guildDelete", new Guild(message.d, this.client));
+			break;
+		case "GUILD_BAN_ADD":
+			/**
+			 * Fired when a user is banned from the guild.
+			 * @event Client#guildBanAdd
+			 */
+			this.client.emit("guildBanAdd", message.d.guild_id, new User(message.d.user, this.client));
+			break;
+		case "GUILD_BAN_REMOVE":
+			/**
+			 * Fired when a user is unbanned from the guild.
+			 * @event Client#guildBanAdd
+			 */
+			this.client.emit("guildBanRemove", message.d.guild_id, new User(message.d.user, this.client));
+			break;
+		case "GUILD_EMOJIS_UPDATE":
+			//TODO: GUILD_EMOJIS_UPDATE
+			break;
+		case "GUILD_INTEGRATIONS_UPDATE":
+			//TODO: GUILD_INTEGRATIONS_UPDATE
+			break;
+		case "GUILD_MEMBER_ADD":
+			/**
+			 * Fired when a new user joins the guild.
+			 * @event Client#guildMemberAdd
+			 */
+			this.client.emit("guildMemberAdd", message.d.guild_id, new GuildMember(message.d, this.client));
+			break;
+		case "GUILD_MEMBER_REMOVE":
+			/**
+			 * Fired when a user leaves or is removed from the guild.
+			 * @event Client#guildMemberRemove
+			 */
+			this.client.emit("guildMemberRemove", message.d.guild_id, new User(message.d, this.client));
+			break;
+		case "GUILD_MEMBER_UPDATE":
+			// TODO: https://discord.com/developers/docs/topics/gateway#guild-member-update
+			break;
+		case "GUILD_MEMBERS_CHUNK":
+			// TODO: https://discord.com/developers/docs/topics/gateway#guild-members-chunk
+			break;
+		case "GUILD_ROLE_CREATE":
+			/**
+			 * Fired when a role is created in a guild.
+			 * @event Client#guildRoleCreate
+			 */
+			this.client.emit("guildRoleCreate", message.d.guild_id, new Role(message.d.role, this.client));
+			break;
+		case "GUILD_ROLE_UPDATE":
+			/**
+			 * Fired when a role is deleted in a guild.
+			 * @event Client#guildRoleUpdate
+			 */
+			this.client.emit("guildRoleUpdate", message.d.guild_id, new Role(message.d.role, this.client));
+			break;
+		case "GUILD_ROLE_DELETE":
+			/**
+			 * Fired when a role is deleted in a guild.
+			 * @event Client#guildRoleDelete
+			 */
+			this.client.emit("guildRoleDelete", message.d.guild_id, message.d.role_id);
+			break;
+		case "INVITE_CREATE":
+			//TODO: https://discord.com/developers/docs/topics/gateway#invite-create
+			break;
+		case "INVITE_DELETE":
+			//TODO: https://discord.com/developers/docs/topics/gateway#invite-delete
+			break;
+		case "MESSAGE_CREATE":
+			/**
+			 * Fired when a message is created
+			 * @event Client#messageCreate
+			 */
+			this.client.emit("messageCreate", new Message(message.d, this.client));
+			break;
+		case "MESSAGE_UPDATE":
+			/**
+			 * Fired when a message is updated
+			 * @event Client#messageUpdate
+			 */
+			if(!message.d.author) break; // FIX: I'm not sure why, but sending a message with an embed attached triggers the messageUpdate event ...?
+			this.client.emit("messageUpdate", new Message(message.d, this.client));
+			break;
+		case "MESSAGE_DELETE":
+			/**
+			 * Fired when a message is deleted
+			 * @event Client#messageDelete
+			 */
+			this.client.emit("messageDelete", message.d.id, message.d.channel_id); //TODO
+			break;
+		case "MESSAGE_DELETE_BULK":
+			/**
+			 * Fired when mesages are deleted in bulk.
+			 * @event Client#messageDeleteBulk
+			 */
+			this.client.emit("messageDeleteBulk", message.d.ids, message.d.channel_id);
+			break;
+		case "MESSAGE_REACTION_ADD":
+			//TODO: https://discord.com/developers/docs/topics/gateway#message-reaction-add (and all other reactions)
+			break;
+		//TODO: All other ones lol
+	}
   }
 
   private async createError(str: string) {
