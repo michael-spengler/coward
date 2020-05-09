@@ -13,7 +13,7 @@ import { Guild, GuildMember, DMChannel, DMGroupChannel, Message, User, Role } fr
  *       const client = new Coward("TOKEN_GOES_HERE");
  *
  *       client.on("ready", () => {
- * 		 	console.log("READY!");
+ * 		     console.log("READY!");
  *       })
  *
  *       client.connect();
@@ -23,12 +23,13 @@ export class Client extends EventEmitter {
 	`DiscordBot (https://github.com/fox-cat/Client), ${Versions.THIS}`;
 	private gateway: Gateway;
 
-	private guilds: Map<string, Guild> = new Map<string, Guild>();
-	private dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>();
-	private dmGroupChannels: Map<string, DMGroupChannel> = new Map<string, DMGroupChannel>();
-	private users: Map<string, User> = new Map<string, User>();
+	// TODO: Store guilds and etc. in here
 
-	/** Create a Client */
+	/**
+	 * Create a Client
+	 *
+	 *       const client = new Coward("TOKEN_HERE");
+	 */
 	public constructor(private token: string) {
 		super();
 		this.gateway = new Gateway(token, this);
@@ -39,22 +40,38 @@ export class Client extends EventEmitter {
 		this.gateway.connect();
 	}
 
-	/** Post a Channel */
-	postChannel(guildID:string, options: Options.postChannel): void {
+	/**
+	 * Post a Channel
+	 *
+	 *       client.postChannel("GUILD_ID", {name: "new-channel", type: 0});
+	 */
+	postChannel(guildID: string, options: Options.postChannel): void {
 		this.request( "POST", Endpoints.GUILD_CHANNELS(guildID), options )
 	}
 
-	/** Modify a Channel */
+	/**
+	 * Modify a Channel
+	 *
+	 *       client.modifyChannel("CHANNEL_ID", {name: "new-name"});
+	 */
 	modifyChannel(channelID: string, options: Options.modifyChannel): void {
 		this.request( "PATCH", Endpoints.CHANNEL(channelID), options );
 	} // TODO: Promise<Channel>
 
-	/** Delete a Channel */
+	/**
+	 * Delete a Channel
+	 *
+	 *       client.deleteChannel("CHANNEL_ID");
+	 */
 	deleteChannel(channelID: string): void {
 		this.request( "DELETE", Endpoints.CHANNEL(channelID) );
 	}
 
-	/** Post a message in a channel */
+	/**
+	 * Post a message in a channel
+	 *
+	 *       client.postMessage("CHANNEL_ID", "Message!");
+	 */
 	postMessage(channelID: string, content: string | Options.postMessage): Promise<Message> {
 		if(typeof content === "string") { content = { content: content } }
 		return new Promise(async (resolve, reject) => {
@@ -64,7 +81,11 @@ export class Client extends EventEmitter {
 		});
 	}
 
-	/** Modify a message in a channel */
+	/**
+	 * Modify a message in a channel
+	 *
+	 *       client.modifyChannel("CHANNEL_ID", "MESSAGE_ID", "Edited message!");
+	 */
 	modifyMessage(channelID: string, messageID: string, content: string | Options.modifyMessage): Promise<Message> {
 		if(typeof content === "string") { content = { content: content } }
 		return new Promise(async (resolve, reject) => {
@@ -74,12 +95,16 @@ export class Client extends EventEmitter {
 		})
 	}
 
-	/** Delete a message in a channel */
+	/**
+	 * Delete a message in a channel
+	 *
+	 *       client.deleteMessage("CHANNEL_ID", "MESSAGE_ID");
+	 */
 	deleteMessage(channelID: string, messageID: string) {
 		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE(channelID, messageID) );
 	}
 
-	async request(method: string, url: string, data?: any) {
+	private async request(method: string, url: string, data?: any) {
 		if(!data) data == null;
 		const response = await fetch(Discord.API + url, {
 			method: method,
@@ -95,6 +120,10 @@ export class Client extends EventEmitter {
 
 /** Namespace for functions */
 export namespace Options {
+	export interface client {
+
+	}
+
 	export interface postChannel {
 		name: string,
 		type: number,

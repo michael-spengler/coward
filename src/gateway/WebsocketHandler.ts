@@ -18,10 +18,7 @@ export default class Gateway {
 
   public async connect(): Promise<void> {
     try {
-      this.sock = await connectWebSocket(
-        `${Discord.GATEWAY}/v=${Versions.GATEWAY}`,
-      );
-      console.log(green("Successfully connected to websocket.")); // TODO(fox-cat): Remove these types of messages or make them optional with a debug parameter
+      this.sock = await connectWebSocket(`${Discord.GATEWAY}/v=${Versions.GATEWAY}`);
 
       for await (const msg of this.sock) {
         if (typeof msg === "string") {
