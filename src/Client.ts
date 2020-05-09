@@ -9,7 +9,7 @@ import { Guild, GuildMember, Message, User, Role } from "./Classes.ts";
  * Class representing the main client
  * @extends EventEmitter
  *
- *       import { Coward } from "https://deno.land/x/coward/mod.ts";
+ *       import { Coward } from "https://deno.land/x/Client/mod.ts";
  *       const client = new Coward("TOKEN_GOES_HERE");
  *
  *       client.on("ready", () => {
@@ -20,7 +20,7 @@ import { Guild, GuildMember, Message, User, Role } from "./Classes.ts";
  */
 export class Client extends EventEmitter {
 	private _userAgent: string =
-	`DiscordBot (https://github.com/fox-cat/coward), ${Versions.THIS}`;
+	`DiscordBot (https://github.com/fox-cat/Client), ${Versions.THIS}`;
 	private gateway: Gateway;
 
 	/** Create a Client */
@@ -35,12 +35,12 @@ export class Client extends EventEmitter {
 	}
 
 	/** Post a Channel */
-	postChannel(guildID:string, options: Coward.postChannelOptions): void {
+	postChannel(guildID:string, options: Client.postChannelOptions): void {
 		this.request( "POST", Endpoints.GUILD_CHANNELS(guildID), options )
 	}
 
 	/** Modify a Channel */
-	modifyChannel(channelID: string, options: Coward.modChannelOptions): void {
+	modifyChannel(channelID: string, options: Client.modChannelOptions): void {
 		this.request( "PATCH", Endpoints.CHANNEL(channelID), options );
 	} // TODO: Promise<Channel>
 
@@ -48,7 +48,6 @@ export class Client extends EventEmitter {
 	deleteChannel(channelID: string): void {
 		this.request( "DELETE", Endpoints.CHANNEL(channelID) );
 	}
-
 
 	/** Post a message in a channel */
 	postMessage(channelID: string, content: string): Promise<Message> {
@@ -77,28 +76,28 @@ export class Client extends EventEmitter {
 			case "READY":
 			/**
 			 * Fired when the Client is ready
-			 * @event Coward#ready
+			 * @event Client#ready
 			 */
 			this.emit("ready", null);
 			break;
 			case "CHANNEL_CREATE":
 				/**
 				 * Fired when a Channel is created.
-				 * @event Coward#channelCreate
+				 * @event Client#channelCreate
 				 */
 				this.emit("channelCreate", null); // TODO: Determine channel type and create channel from there.
 				break;
 			case "CHANNEL_UPDATE":
 				/**
 				 * Fired when a Channel is updated.
-				 * @event Coward#channelUpdate
+				 * @event Client#channelUpdate
 				 */
 				this.emit("channelUpdate", null);
 				break;
 			case "CHANNEL_DELETE":
 				/**
 				 * Fired when a Channel is deleted.
-				 * @event Coward#channelDelete
+				 * @event Client#channelDelete
 				 */
 				this.emit("channelDelete", null);
 				break;
@@ -109,7 +108,7 @@ export class Client extends EventEmitter {
 				 *  - The client is initally connecting.
 				 *  - A guild becomes available to the client.
 				 *  - The client joins a guild.
-				 * @event Coward#guildCreate
+				 * @event Client#guildCreate
 				 */
 				this.emit("guildCreate", new Guild(message.d, this));
 				break;
@@ -118,21 +117,21 @@ export class Client extends EventEmitter {
 				 * Fired when
 				 *  - The client leaves or is removed from a guild.
 				 *  - A guild becomes unavailable.
-				 * @event Coward#guildDelete
+				 * @event Client#guildDelete
 				 */
 				this.emit("guildDelete", new Guild(message.d, this));
 				break;
 			case "GUILD_BAN_ADD":
 				/**
 				 * Fired when a user is banned from the guild.
-				 * @event Coward#guildBanAdd
+				 * @event Client#guildBanAdd
 				 */
 				this.emit("guildBanAdd", message.d.guild_id, new User(message.d.user, this));
 				break;
 			case "GUILD_BAN_REMOVE":
 				/**
 				 * Fired when a user is unbanned from the guild.
-				 * @event Coward#guildBanAdd
+				 * @event Client#guildBanAdd
 				 */
 				this.emit("guildBanRemove", message.d.guild_id, new User(message.d.user, this));
 				break;
@@ -145,14 +144,14 @@ export class Client extends EventEmitter {
 			case "GUILD_MEMBER_ADD":
 				/**
 				 * Fired when a new user joins the guild.
-				 * @event Coward#guildMemberAdd
+				 * @event Client#guildMemberAdd
 				 */
 				this.emit("guildMemberAdd", message.d.guild_id, new GuildMember(message.d, this));
 				break;
 			case "GUILD_MEMBER_REMOVE":
 				/**
 				 * Fired when a user leaves or is removed from the guild.
-				 * @event Coward#guildMemberRemove
+				 * @event Client#guildMemberRemove
 				 */
 				this.emit("guildMemberRemove", message.d.guild_id, new User(message.d, this));
 				break;
@@ -165,21 +164,21 @@ export class Client extends EventEmitter {
 			case "GUILD_ROLE_CREATE":
 				/**
 				 * Fired when a role is created in a guild.
-				 * @event Coward#guildRoleCreate
+				 * @event Client#guildRoleCreate
 				 */
 				this.emit("guildRoleCreate", message.d.guild_id, new Role(message.d.role, this));
 				break;
 			case "GUILD_ROLE_UPDATE":
 				/**
 				 * Fired when a role is deleted in a guild.
-				 * @event Coward#guildRoleUpdate
+				 * @event Client#guildRoleUpdate
 				 */
 				this.emit("guildRoleUpdate", message.d.guild_id, new Role(message.d.role, this));
 				break;
 			case "GUILD_ROLE_DELETE":
 				/**
 				 * Fired when a role is deleted in a guild.
-				 * @event Coward#guildRoleDelete
+				 * @event Client#guildRoleDelete
 				 */
 				this.emit("guildRoleDelete", message.d.guild_id, message.d.role_id);
 				break;
@@ -192,28 +191,28 @@ export class Client extends EventEmitter {
 			case "MESSAGE_CREATE":
 				/**
 				 * Fired when a message is created
-				 * @event Coward#messageCreate
+				 * @event Client#messageCreate
 				 */
 				this.emit("messageCreate", new Message(message.d, this));
 				break;
 			case "MESSAGE_UPDATE":
 				/**
 				 * Fired when a message is updated
-				 * @event Coward#messageUpdate
+				 * @event Client#messageUpdate
 				 */
 				this.emit("messageUpdate", new Message(message.d, this));
 				break;
 			case "MESSAGE_DELETE":
 				/**
 				 * Fired when a message is deleted
-				 * @event Coward#messageDelete
+				 * @event Client#messageDelete
 				 */
 				this.emit("messageDelete", message.d.id, message.d.channel_id); //TODO
 				break;
 			case "MESSAGE_DELETE_BULK":
 				/**
 				 * Fired when mesages are deleted in bulk.
-				 * @event Coward#messageDeleteBulk
+				 * @event Client#messageDeleteBulk
 				 */
 				this.emit("messageDeleteBulk", message.d.ids, message.d.channel_id);
 				break;
@@ -225,7 +224,8 @@ export class Client extends EventEmitter {
 	}
 }
 
-export namespace Coward {
+/** Namespace for functions */
+export namespace Client {
 	export interface postChannelOptions {
 		name: string,
 		type: number,
