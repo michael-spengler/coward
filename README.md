@@ -8,6 +8,7 @@ Coward is a Deno module for easy interaction with the [Discord API](https://disc
 import { Coward } from "https://deno.land/x/coward/mod.ts";
 ```
 Please don't use this in anything important yet. It is barely functional, and as such is not production ready.
+Read the [Docs](https://doc.deno.land/https/deno.land/x/coward/mod.ts)
 
 ## Ping-Pong Example
 
