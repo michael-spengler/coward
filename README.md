@@ -2,6 +2,11 @@
 
 Coward is a Deno module for easy interaction with the [Discord API](https://discordapp.com/developers/docs/intro "Discord API")
 
+[![license](https://img.shields.io/github/license/fox-cat/coward?color=orange)](LICENSE)
+[![maintainability](https://img.shields.io/codeclimate/maintainability-percentage/fox-cat/coward)](https://codeclimate.com/github/fox-cat/coward/maintainability)
+[![deno documentation](https://img.shields.io/badge/deno-documentation-blue?style=flat)](https://doc.deno.land/https/deno.land/x/coward/mod.ts)
+[![chat](https://img.shields.io/discord/699014519745413181?style=flat)](https://discord.gg/9u9Hkn7)
+
 ## Usage
 
 ```typescript
