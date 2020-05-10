@@ -281,9 +281,6 @@ export namespace Options {
 		embed?: any
 	}
 
-	/**
-	 * @interface modifyGuild
-	 */
 	export interface modifyGuild {
 		name?: string,
 		region?: string,
@@ -302,9 +299,6 @@ export namespace Options {
 		preferred_locale?: string
 	}
 
-	/**
-	 * @interface modifyMember
-	 */
 	export interface modifyMember {
 		nick?: string,
 		//roles?: Array<string>
