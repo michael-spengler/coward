@@ -214,7 +214,7 @@ export class Client extends EventEmitter {
 	modifyMember(guildID: string, memberID: string, options: Options.modifyMember): Promise<GuildMember> {
 		return new Promise(async (resolve, reject) => {
 			this.request( "PATCH", Endpoints.GUILD_MEMBER(guildID, memberID) )
-				.then((data: any) => { resolve(new GuildMember(data, this)); });
+				.then((data: any) => { resolve(new GuildMember(data, this)); })
 				.catch((err: any) => { reject(err); });
 		});
 	}
