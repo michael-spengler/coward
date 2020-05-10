@@ -9,14 +9,14 @@ import { Channel, Guild, GuildMember, DMChannel, DMGroupChannel, Message, User, 
  * Class representing the main client
  * @extends EventEmitter
  *
- *           import { Coward } from "https://deno.land/x/Client/mod.ts";
- *           const client = new Coward("TOKEN_GOES_HERE");
+ *            import { Coward } from "https://deno.land/x/Client/mod.ts";
+ *            const client = new Coward("TOKEN_GOES_HERE");
  *
- *           client.on("ready", () => {
- * 		           console.log("READY!");
- *           });
+ *            client.on("ready", () => {
+ * 		            console.log("READY!");
+ *            });
  *
- *           client.connect();
+ *            client.connect();
  */
 export class Client extends EventEmitter {
 	private _userAgent: string =
@@ -92,7 +92,7 @@ export class Client extends EventEmitter {
 	/**
 	 * Modify a message in a channel
 	 *
-	 *       client.modifyChannel("CHANNEL_ID", "MESSAGE_ID", "Edited message!");
+	 *       client.modifyMessage("CHANNEL_ID", "MESSAGE_ID", "Edited message!");
 	 */
 	modifyMessage(channelID: string, messageID: string, content: string | Options.modifyMessage): Promise<Message> {
 		if(typeof content === "string") { content = { content: content } }
@@ -111,6 +111,8 @@ export class Client extends EventEmitter {
 	deleteMessage(channelID: string, messageID: string): void {
 		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE(channelID, messageID) );
 	}
+
+	// TODO: bulkDeleteMessage(channelID: string, amount: number): void {}
 
 	/**
 	 * Put a reaction on a message.
@@ -147,6 +149,74 @@ export class Client extends EventEmitter {
 	 */
 	deleteAllEmojiReactions(channelID: string, messageID: string, emoji: string): void {
 		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION(channelID, messageID, emoji) );
+	}
+
+	// TODO: putChannelPermissions ?
+
+	// TODO: getChannelInvite, createChannelInvite ?
+
+	/**
+	 * Start typing in a channel. Bots should usually not use this, however if a bot is responding to a command and expects the computation to take a few seconds, this may be used to let the user know that the bot is processing their message.
+	 *
+	 *       client.postTyping("CHANNEL_ID");
+	 */
+	postTyping(channelID: string): void {
+		this.request( "POST", Endpoints.CHANNEL_TYPING(channelID) );
+	}
+
+	/**
+	 * Pin a message in a channel.
+	 *
+	 *       client.putPin("CHANNEL_ID", "MESSAGE_ID");
+	 */
+	putPin(channelID: string, messageID: string): void {
+		this.request( "PUT", Endpoints.CHANNEL_PIN(channelID, messageID) );
+	}
+
+	/**
+	 * Delete a pinned message in a channel.
+	 *
+	 *       client.deletePin("CHANNEL_ID", "MESSAGE_ID");
+	 */
+	deletePin(channelID: string, messageID: string): void {
+		this.request( "DELETE", Endpoints.CHANNEL_PIN(channelID, messageID) );
+	}
+
+	// TODO: Emoji (https://discord.com/developers/docs/resources/emoji)
+
+	/**
+	 * Modify a guild's settings.
+	 *
+	 *       client.modifyGuild("GUILD_ID", {name: "new-name"});
+	 */
+	modifyGuild(guildID: string, options: Options.modifyGuild): Promise<Guild> {
+		return new Promise(async (resolve, reject) => {
+			this.request( "PATCH", Endpoints.GUILD(guildID) )
+				.then((data: any) => { resolve(new Guild(data, this)); })
+				.catch((err: any) => { reject(err); } );
+		});
+	}
+
+	/**
+	 * Delete a guild. (MUST be guild owner)
+	 *
+	 *       client.deleteGuild("GUILD_ID");
+	 */
+	deleteGuild(guildID: string): void {
+		this.request( "DELETE", Endpoints.GUILD(guildID) );
+	}
+
+	/**
+	 * Modify a member.
+	 *
+	 *       client.modifyMember("GUILD_ID", "MEMBER_ID", {nick: "haha nickname"});
+	 */
+	modifyMember(guildID: string, memberID: string, options: Options.modifyMember): Promise<GuildMember> {
+		return new Promise(async (resolve, reject) => {
+			this.request( "PATCH", Endpoints.GUILD_MEMBER(guildID, memberID) )
+				.then((data: any) => { resolve(new GuildMember(data, this)); });
+				.catch((err: any) => { reject(err); });
+		});
 	}
 
 	private async request(method: string, url: string, data?: any) {
@@ -209,5 +279,38 @@ export namespace Options {
 		content?: string,
 		// TODO: file
 		embed?: any
+	}
+
+	/**
+	 * @interface modifyGuild
+	 */
+	export interface modifyGuild {
+		name?: string,
+		region?: string,
+		verification_level?: number,
+		default_message_notifcations?: number,
+		explicit_content_filter?: number,
+		afk_channel_id?: string,
+		afk_timeout?: number,
+		// TODO: icon
+		owner_id?: string,
+		// TODO: splash
+		// TODO: banner
+		system_channel_id?: string,
+		rules_channel_id?: string,
+		public_updates_channel_id?: string,
+		preferred_locale?: string
+	}
+
+	/**
+	 * @interface modifyMember
+	 */
+	export interface modifyMember {
+		nick?: string,
+		//roles?: Array<string>
+		mute?: boolean,
+		deaf?: boolean,
+		/** The channel to move the member to (if they are in a voice channel) */
+		channel_id?: string
 	}
 }
