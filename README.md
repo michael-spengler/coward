@@ -14,8 +14,6 @@ import { Coward } from "https://deno.land/x/coward/mod.ts";
 ```
 Please don't use this in anything important yet. It is barely functional, and as such is not production ready.
 
-Read the [Docs](https://doc.deno.land/https/deno.land/x/coward/mod.ts)
-
 ## Ping-Pong Example
 
 ```typescript
@@ -32,6 +30,6 @@ client.on("messageCreate", (message: any) => {
 client.connect();
 ```
 
-## License
+## License, Contributing
 
-Please refer to [LICENSE](LICENSE)
+Please refer to [LICENSE](LICENSE) and [CONTRIBUTING](.github/CONTRIBUTING.md)

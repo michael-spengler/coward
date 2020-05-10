@@ -30,7 +30,7 @@ export class Client extends EventEmitter {
 	 *
 	 *       const client = new Coward("TOKEN_HERE");
 	 */
-	public constructor(private token: string) {
+	public constructor(private token: string, public options: Options.clientConstructor = {}) {
 		super();
 		this.gateway = new Gateway(token, this);
 	}
@@ -219,6 +219,24 @@ export class Client extends EventEmitter {
 		});
 	}
 
+	/**
+	 * Put a ban in a server.
+	 *
+	 *       client.putBan("GUILD_ID", "USER_ID", {"delete-message-days": 2});
+	 */
+	putBan(guildID: string, userID: string, options: Options.putBan): void {
+		this.request( "PUT", Endpoints.GUILD_BAN(guildID, userID), options );
+	}
+
+	/**
+	 * Delete a ban in a server.
+	 *
+	 *       client.deleteBan("GUILD_ID", "USER_ID");
+	 */
+	deleteBan(guildID: string, userID: string): void {
+		this.request( "DELETE", Endpoints.GUILD_BAN(guildID, userID) );
+	}
+
 	private async request(method: string, url: string, data?: any) {
 		let json: {[k: string]: any} = {
 			method: method,
@@ -238,7 +256,7 @@ export class Client extends EventEmitter {
 
 /** Namespace for functions */
 export namespace Options {
-	export interface client {
+	export interface clientConstructor {
 
 	}
 
@@ -306,5 +324,11 @@ export namespace Options {
 		deaf?: boolean,
 		/** The channel to move the member to (if they are in a voice channel) */
 		channel_id?: string
+	}
+
+	export interface putBan {
+		/** Amount of days to delete messages for (between 1-7) */
+		"delete-message-days"?: number
+		reason?: string
 	}
 }
