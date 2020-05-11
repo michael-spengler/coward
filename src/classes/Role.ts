@@ -2,23 +2,19 @@ import { Client } from "../Client.ts";
 
 /** Class representing a Role */
 export class Role {
-	public id: string | undefined;
-	public name: string | undefined;
-	public color: number | undefined;
-	public hoist: boolean | undefined;
-	public managed: boolean | undefined;
-	public mentionable: boolean | undefined;
+	public id: string;
+	public name: string;
+	public color: number;
+	public hoist: boolean;
+	public managed: boolean;
+	public mentionable: boolean;
 
 	constructor(data: any, client: Client) {
-		this.set(data, client);
-	}
-
-	set(d: any, client: Client) {
-		this.id = d.id;
-		this.name = d.name;
-		this.color = d.color;
-		this.hoist = d.hoist;
-		this.managed = d.managed;
-		this.mentionable = d.mentionable;
+		this.id = data.id;
+		this.name = data.name;
+		this.color = data.color;
+		this.hoist = data.hoist;
+		this.managed = data.managed;
+		this.mentionable = data.mentionable;
 	}
 }

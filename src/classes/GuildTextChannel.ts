@@ -10,10 +10,11 @@ import { GuildChannel } from "./GuildChannel.ts";
 export class GuildTextChannel extends GuildChannel {
 	public rate_limit_per_user: number;
 	public topic: string;
-	public last_message_id: string; // TODO(fox-cat): contemplate message object here?
+	public last_message_id: string;
 
-	// TODO: Map of messages in a channel? (contemplate ^_^)
-	// why would i do that
+	public messages: Map<string, Message> = new Map<string, Message>();
+	// TODO: deal with messages. possible message limit from client options?
+	// contemplate. ^_^
 
 	constructor(data: any, client: Client) {
 		super(data, client);

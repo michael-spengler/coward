@@ -7,7 +7,8 @@ import {
 	GuildChannelCategory,
 	GuildNewsChannel,
 	GuildStoreChannel,
-	GuildMember
+	GuildMember,
+	GuildEmoji
 } from "../Classes.ts";
 
 type GuildChannelTypes = GuildTextChannel | GuildVoiceChannel | GuildChannelCategory | GuildNewsChannel | GuildStoreChannel
@@ -18,33 +19,39 @@ export class Guild {
 	// bad way to do this i think, so uh
 	// TODO: deal with this
 
-	public id: string | undefined;
-	public name: string | undefined;
-	public ownerID: string | undefined;
-	public region: string | undefined;
+	public id: string;
+	public name: string;
+	public ownerID: string;
+	public region: string;
 
+	/** A map of guild channels. */
 	public channels: Map<string, GuildChannelTypes | undefined> = new Map<string, GuildChannelTypes | undefined>();
+	/** A map of members */
 	public members: Map<string, GuildMember> = new Map<string, GuildMember>();
+	/** A map of emoji */
+	public emojis: Map<string, GuildEmoji> = new Map<string, GuildEmoji>();
 
 	constructor(data: any, client: Client) {
-		this.set(data, client);
-	}
+		this.id = data.id;
+		this.name = data.name;
+		this.ownerID = data.ownerID;
+		this.region = data.region;
 
-	set(d: any, client: Client) {
-		if(d.id) this.id = d.id;
-		if(d.name) this.name = d.name;
-		if(d.ownerID) this.ownerID = d.ownerID;
-		if(d.region) this.region = d.region;
-
-		if(d.channels) {
-			for(const chan of d.channels) {
+		if(data.channels) {
+			for(const chan of data.channels) {
 				this.channels.set(chan.id, GuildChannel.new(chan, client));
 			}
 		}
 
-		if(d.members) {
-			for(const mem of d.members) {
-				this.members.set(mem.id, new GuildMember(mem, client));
+		if(data.members) {
+			for(const mem of data.members) {
+				this.members.set(mem.user.id, new GuildMember(mem, client));
+			}
+		}
+
+		if(data.emojis) {
+			for(const e of data.emojis) {
+				this.emojis.set(e.id, new GuildEmoji(e, client));
 			}
 		}
 	}

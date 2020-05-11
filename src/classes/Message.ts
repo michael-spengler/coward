@@ -2,21 +2,17 @@ import { Client } from "../Client.ts";
 
 /** Class representing a message */
 export class Message {
-	public id: string | undefined;
-	public content: string | undefined;
-	public channel: string | undefined; //TODO: Channel Object
-	public author: string | undefined; //TODO: User Object
-	public timestamp: string | undefined;
+	public id: string;
+	public content: string;
+	public channel: string; //TODO: Channel Object
+	public author: string; //TODO: User Object
+	public timestamp: string;
 
 	constructor(data: any, client: Client) {
-		this.set(data, client);
-	}
-
-	set(d: any, client: Client) {
-		this.id = d.id;
-		this.content = d.content;
-		this.channel = d.channel_id;
-		this.author = d.author.id;
-		this.timestamp = d.timestamp;
+		this.id = data.id;
+		this.content = data.content;
+		this.channel = data.channel_id;
+		this.author = data.author.id;
+		this.timestamp = data.timestamp;
 	}
 }
