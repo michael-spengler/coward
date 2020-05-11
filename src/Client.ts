@@ -1,6 +1,7 @@
 import { EventEmitter } from "../deps.ts";
 
-import { Versions, Discord, Endpoints } from "./util/Constants.ts";
+import { Permissions, Versions, Discord, Endpoints } from "./util/Constants.ts";
+import { permToArray } from "./util/Permission.ts"
 import Gateway from "./gateway/WebsocketHandler.ts";
 
 import { Channel, Guild, GuildMember, DMChannel, DMGroupChannel, Message, User, Role } from "./Classes.ts";
@@ -209,14 +210,41 @@ export class Client extends EventEmitter {
 	/**
 	 * Modify a member.
 	 *
-	 *       client.modifyMember("GUILD_ID", "MEMBER_ID", {nick: "haha nickname"});
+	 *       client.modifyMember("GUILD_ID", "USER_ID", {nick: "haha nickname"});
 	 */
-	modifyMember(guildID: string, memberID: string, options: Options.modifyMember): Promise<GuildMember> {
+	modifyMember(guildID: string, userID: string, options: Options.modifyMember): Promise<GuildMember> {
 		return new Promise(async (resolve, reject) => {
-			this.request( "PATCH", Endpoints.GUILD_MEMBER(guildID, memberID) )
+			this.request( "PATCH", Endpoints.GUILD_MEMBER(guildID, userID), options )
 				.then((data: any) => { resolve(new GuildMember(data, this)); })
 				.catch((err: any) => { reject(err); });
 		});
+	}
+
+	/**
+	 * Add a role to a member.
+	 *
+	 *       client.putRole("GUILD_ID", "USER_ID", "ROLE_ID");
+	 */
+	putRole(guildID: string, userID: string, roleID: string): void {
+		this.request( "PUT", Endpoints.GUILD_MEMBER_ROLE(guildID, userID, roleID) )
+	}
+
+	/**
+	 * Remove a role from a member.
+	 *
+	 *       client.removeRole("GUILD_ID", "USER_ID", "ROLE_ID");
+	 */
+	removeRole(guildID: string, userID: string, roleID: string): void {
+		this.request( "DELETE", Endpoints.GUILD_MEMBER_ROLE(guildID, userID, roleID) )
+	}
+
+	/**
+	 * Kick/remove a member from a guild.
+	 *
+	 *       client.removeMember("GUILD_ID", "USER_ID");
+	 */
+	removeMember(guildID: string, userID: string): void {
+		this.request( "DELETE", Endpoints.GUILD_MEMBER(guildID, userID) )
 	}
 
 	/**

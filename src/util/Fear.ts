@@ -7,11 +7,11 @@ export type DebugTypes = "debug" | "info" | "warning" | "error" | "critical";
 // Too bad.
 export function fear(type: DebugTypes, text: string) {
 	var debug = false;
-
 	switch(type) {
 		case "debug":
-			if(debug) break;
-			console.log(bold(green("[coward] debug: ")) + reset(text));
+			if(debug) {
+				console.log(bold(green("[coward] debug: ")) + reset(text));
+			}
 			break;
 		case "info":
 			console.log(bold(green("[coward] info: ")) + reset(text));
