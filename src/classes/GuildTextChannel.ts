@@ -8,17 +8,18 @@ import { GuildChannel } from "./GuildChannel.ts";
  * @extends GuildChannel
  */
 export class GuildTextChannel extends GuildChannel {
-  public rate_limit_per_user: number;
-  public topic: string;
-  public last_message_id: string; // TODO(fox-cat): contemplate message object here?
+	public rate_limit_per_user: number;
+	public topic: string;
+	public last_message_id: string; // TODO(fox-cat): contemplate message object here?
 
-  // TODO(fox-cat): Map of messages in a channel? (contemplate ^_^)
+	// TODO: Map of messages in a channel? (contemplate ^_^)
+	// why would i do that
 
-  constructor(data: any, client: Client) {
-    super(data, client);
+	constructor(data: any, client: Client) {
+		super(data, client);
 
-    this.rate_limit_per_user = data.rate_limit_per_user;
-    this.topic = data.topic || null;
-    this.last_message_id = data.last_message_id || null;
-  }
+		this.rate_limit_per_user = data.rate_limit_per_user;
+		this.topic = data.topic || null;
+		this.last_message_id = data.last_message_id || null;
+	}
 }

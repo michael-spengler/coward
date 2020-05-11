@@ -8,16 +8,17 @@ import { DMChannel } from "./DMChannel.ts";
  * Class representing a DM group channel
  * @extends DMChannel
  */
+// Is this necessary? Bots can't join group channels TMK
 export class DMGroupChannel extends DMChannel {
-  public name: string;
-  public icon: string;
-  public owner_id: string; // TODO(fox-cat): user object
+	public name: string;
+	public icon: string;
+	public owner_id: string; // TODO(fox-cat): user object
 
-  constructor(data: any, client: Client) {
-    super(data, client);
+	constructor(data: any, client: Client) {
+		super(data, client);
 
-    this.name = data.name || null;
-    this.icon = data.icon || null;
-    this.owner_id = data.owner_id;
-  }
+		this.name = data.name || null;
+		this.icon = data.icon || null;
+		this.owner_id = data.owner_id;
+	}
 }

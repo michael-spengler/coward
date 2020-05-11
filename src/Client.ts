@@ -24,6 +24,10 @@ export class Client extends EventEmitter {
 	`DiscordBot (https://github.com/fox-cat/Client), ${Versions.THIS}`;
 	private gateway: Gateway;
 
+	public guilds: Map<string, Guild> = new Map<string, Guild>();
+	public users: Map<string, User> = new Map<string, User>();
+	public dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>();
+
 	// TODO: Store guilds and etc. in here
 
 	/**

@@ -8,13 +8,13 @@ import { GuildChannel } from "./GuildChannel.ts";
  * @extends GuildChannel
  */
 export class GuildNewsChannel extends GuildChannel {
-  public topic: string;
-  public last_message_id: string; // TODO(fox-cat): contemplate message object here?
+	public topic: string;
+	public last_message_id: string; // TODO(fox-cat): contemplate message object here?
 
-  constructor(data: any, client: Client) {
-    super(data, client);
+	constructor(data: any, client: Client) {
+		super(data, client);
 
-    this.topic = data.topic || null;
-    this.last_message_id = data.last_message_id || null;
-  }
+		this.topic = data.topic || null;
+		this.last_message_id = data.last_message_id || null;
+	}
 }

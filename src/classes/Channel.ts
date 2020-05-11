@@ -1,5 +1,13 @@
 import { Client } from "../Client.ts";
-import { GuildTextChannel, DMChannel, GuildVoiceChannel, DMGroupChannel, GuildChannelCategory, GuildNewsChannel, GuildStoreChannel } from "../Classes.ts";
+import { 
+	GuildTextChannel,
+	DMChannel,
+	GuildVoiceChannel,
+	DMGroupChannel,
+	GuildChannelCategory,
+	GuildNewsChannel,
+	GuildStoreChannel
+} from "../Classes.ts";
 
 /** Class representing a channel */
 export class Channel {
