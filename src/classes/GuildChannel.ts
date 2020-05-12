@@ -18,7 +18,7 @@ export class GuildChannel extends Channel {
 	public guild: string; // TODO(fox-cat): guild object
 	public position: number;
 	public nsfw: boolean;
-	public parent_id: string; // TODO(fox-cat): channel category object ????
+	public parentID: string; // TODO(fox-cat): channel category object ????
 	//public permission_overwrites: Array<>; // TODO(fox-cat): this whole thing
 
 	constructor(data: any, client: Client) {
@@ -28,7 +28,7 @@ export class GuildChannel extends Channel {
 		this.guild = data.guild_id;
 		this.position = data.position;
 		this.nsfw = data.nsfw;
-		this.parent_id = data.parent_id || null;
+		this.parentID = data.parent_id || null;
 		//this.permission_overwrites = data.permission_overwrites;
 	}
 
@@ -48,6 +48,9 @@ export class GuildChannel extends Channel {
 				break;
 			case 6:
 				return new GuildStoreChannel(data, client);
+				break;
+			default:
+				return new GuildChannel(data, client);
 				break;
 		}
 	}

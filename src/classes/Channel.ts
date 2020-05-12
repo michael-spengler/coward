@@ -1,9 +1,8 @@
 import { Client } from "../Client.ts";
-import { 
+import {
 	GuildTextChannel,
 	DMChannel,
 	GuildVoiceChannel,
-	DMGroupChannel,
 	GuildChannelCategory,
 	GuildNewsChannel,
 	GuildStoreChannel
@@ -31,7 +30,7 @@ export class Channel {
 				return new GuildVoiceChannel(data, client);
 				break;
 			case 3:
-				return new DMGroupChannel(data, client);
+				//DMGroupChannel - BOTS can't join these. :(
 				break;
 			case 4:
 				return new GuildChannelCategory(data, client);
@@ -41,6 +40,9 @@ export class Channel {
 				break;
 			case 6:
 				return new GuildStoreChannel(data, client);
+				break;
+			default:
+				return new Channel(data, client);
 				break;
 		}
 	}

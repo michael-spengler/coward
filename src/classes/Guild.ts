@@ -15,17 +15,13 @@ type GuildChannelTypes = GuildTextChannel | GuildVoiceChannel | GuildChannelCate
 
 /** Class representing a guild */
 export class Guild {
-	// "| undefined" just to get rid of the "no initializer" error. this is a
-	// bad way to do this i think, so uh
-	// TODO: deal with this
-
 	public id: string;
 	public name: string;
 	public ownerID: string;
 	public region: string;
 
 	/** A map of guild channels. */
-	public channels: Map<string, GuildChannelTypes | undefined> = new Map<string, GuildChannelTypes | undefined>();
+	public channels: Map<string, GuildChannelTypes | any> = new Map<string, GuildChannelTypes | any>();
 	/** A map of members */
 	public members: Map<string, GuildMember> = new Map<string, GuildMember>();
 	/** A map of emoji */

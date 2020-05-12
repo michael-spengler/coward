@@ -9,12 +9,12 @@ import { GuildChannel } from "./GuildChannel.ts";
  */
 export class GuildNewsChannel extends GuildChannel {
 	public topic: string;
-	public last_message_id: string; // TODO(fox-cat): contemplate message object here?
+	public lastMessageID: string; // TODO(fox-cat): contemplate message object here?
 
 	constructor(data: any, client: Client) {
 		super(data, client);
 
 		this.topic = data.topic || null;
-		this.last_message_id = data.last_message_id || null;
+		this.lastMessageID = data.last_message_id || null;
 	}
 }

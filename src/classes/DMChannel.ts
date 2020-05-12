@@ -1,15 +1,12 @@
 import { Client } from "../Client.ts";
-import { Message } from "./Message.ts";
-import { User } from "./User.ts";
-import { Channel } from "./Channel.ts";
-
+import { Message, User, Channel } from "../Classes.ts";
 /**
  * Class representing a DM channel
  * @extends Channel
  */
 export class DMChannel extends Channel {
 	public recipients: Array<User>;
-	public last_message_id: string; // TODO(fox-cat): contemplate message object here?
+	public lastMessageID: string; // TODO(fox-cat): contemplate message object here?
 
 	constructor(data: any, client: Client) {
 		super(data, client);
@@ -23,6 +20,6 @@ export class DMChannel extends Channel {
 			arr[<any>i] = new User(data.recipients[i], client);
 		}
 		this.recipients = arr;
-		this.last_message_id = data.last_message_id;
+		this.lastMessageID = data.last_message_id;
 	}
 }

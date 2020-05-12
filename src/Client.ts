@@ -4,7 +4,7 @@ import { Permissions, Versions, Discord, Endpoints } from "./util/Constants.ts";
 import { permToArray } from "./util/Permission.ts"
 import Gateway from "./gateway/WebsocketHandler.ts";
 
-import { Channel, Guild, GuildMember, DMChannel, DMGroupChannel, Message, User, Role } from "./Classes.ts";
+import { Channel, Guild, GuildMember, DMChannel, Message, User, Role } from "./Classes.ts";
 
 /**
  * Class representing the main client
