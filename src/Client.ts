@@ -1,8 +1,9 @@
-import { EventEmitter } from "../deps.ts";
+import { EventEmitter, red, bold } from "../deps.ts";
 
 import { Permissions, Versions, Discord, Endpoints } from "./util/Constants.ts";
 import { permToArray } from "./util/Permission.ts"
 import Gateway from "./gateway/WebsocketHandler.ts";
+import { fear } from "./util/Fear.ts";
 
 import { Channel, Guild, GuildMember, DMChannel, Message, User, Role } from "./Classes.ts";
 
@@ -67,7 +68,7 @@ export class Client extends EventEmitter {
 		return new Promise(async (resolve, reject) => {
 			this.request( "PATCH", Endpoints.CHANNEL(channelID), options )
 				.then((data: any) => { resolve(Channel.new(data, this)); })
-				.catch((err: any) => { reject(err); })
+				.catch((err: any) => { reject(err); });
 		});
 	}
 
@@ -281,12 +282,24 @@ export class Client extends EventEmitter {
 		}
 		if(data !== undefined) json.body = JSON.stringify(data);
 		const response = await fetch(Discord.API + url, json);
-		if (response.status === 403) {
-			const { message } = await response.json();
-			throw new Error(message);
+		switch(response.status) {
+			case 400:
+			case 401:
+			case 403:
+			case 404:
+			case 405:
+			case 429:
+			case 502:
+				const { message } = await response.json();
+				throw new Error(response.status + ", " + message);
+				break;
+			case 204:
+				return null;
+				break;
+			default:
+				return response.json();
+				break;
 		}
-		if(response.status == 204) { return null; }
-		return response.json();
 	}
 }
 

@@ -23,11 +23,8 @@ export class Message {
 		this.content = data.content;
 		var channel: any;
 		if(data.guild_id) var guild = client.guilds.get(data.guild_id);
-		if(guild != undefined) {
-			channel = guild.channels.get(data.channel_id);
-		} else {
-			channel = client.dmChannels.get(data.channel_id);
-		}
+		if(guild != undefined) channel = guild.channels.get(data.channel_id);
+		else channel = client.dmChannels.get(data.channel_id);
 		this.channel = channel;
 		this.author = new User(data.author, client);
 		this.timestamp = data.timestamp;
