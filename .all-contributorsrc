@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "Joralmo",
+      "name": "Joralmo",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/19753876?v=4",
+      "profile": "https://github.com/Joralmo",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "coward",
+  "projectOwner": "fox-cat",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
