@@ -1,6 +1,5 @@
 export { Channel } 					from "./classes/Channel.ts";
 export { DMChannel } 				from "./classes/DMChannel.ts";
-export { DMGroupChannel } 			from "./classes/DMGroupChannel.ts";
 export { Guild } 					from "./classes/Guild.ts";
 export { GuildChannel } 			from "./classes/GuildChannel.ts";
 export { GuildChannelCategory } 	from "./classes/GuildChannelCategory.ts";

@@ -8,9 +8,9 @@ import { GuildChannel } from "./GuildChannel.ts";
  * @extends GuildChannel
  */
 export class GuildTextChannel extends GuildChannel {
-	public rate_limit_per_user: number;
+	public rateLimitPerUser: number;
 	public topic: string;
-	public last_message_id: string;
+	public lastMessageID: string;
 
 	public messages: Map<string, Message> = new Map<string, Message>();
 	// TODO: deal with messages. possible message limit from client options?
@@ -19,8 +19,8 @@ export class GuildTextChannel extends GuildChannel {
 	constructor(data: any, client: Client) {
 		super(data, client);
 
-		this.rate_limit_per_user = data.rate_limit_per_user;
+		this.rateLimitPerUser = data.rate_limit_per_user;
 		this.topic = data.topic || null;
-		this.last_message_id = data.last_message_id || null;
+		this.lastMessageID = data.last_message_id || null;
 	}
 }

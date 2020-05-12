@@ -8,7 +8,7 @@ export class GuildEmoji {
 	public roles: Map<string, Role> = new Map<string, Role>();
 	/** User that created the emoji */
 	public user: User | undefined;
-	public require_colons: boolean;
+	public requireColons: boolean;
 	/** Whether the emoji is managed */
 	public managed: boolean;
 	public animated: boolean;
@@ -24,7 +24,7 @@ export class GuildEmoji {
 			}
 		}
 		if(this.user) this.user = new User(data.user, client) || null;
-		this.require_colons = data.require_colons;
+		this.requireColons = data.require_colons;
 		this.managed = data.managed;
 		this.animated = data.animated || false;
 		this.available = data.available;

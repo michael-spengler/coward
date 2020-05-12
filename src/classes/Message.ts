@@ -1,18 +1,35 @@
 import { Client } from "../Client.ts";
+import {
+	User,
+	GuildTextChannel,
+	DMChannel,
+	GuildVoiceChannel,
+	GuildChannelCategory,
+	GuildNewsChannel,
+	GuildStoreChannel,
+	GuildMember
+} from "../Classes.ts";
 
 /** Class representing a message */
 export class Message {
 	public id: string;
 	public content: string;
-	public channel: string; //TODO: Channel Object
-	public author: string; //TODO: User Object
+	public channel: GuildTextChannel | DMChannel | GuildNewsChannel;
+	public author: User;
 	public timestamp: string;
 
 	constructor(data: any, client: Client) {
 		this.id = data.id;
 		this.content = data.content;
-		this.channel = data.channel_id;
-		this.author = data.author.id;
+		var channel: any;
+		if(data.guild_id) var guild = client.guilds.get(data.guild_id);
+		if(guild != undefined) {
+			channel = guild.channels.get(data.channel_id);
+		} else {
+			channel = client.dmChannels.get(data.channel_id);
+		}
+		this.channel = channel;
+		this.author = new User(data.author, client);
 		this.timestamp = data.timestamp;
 	}
 }
