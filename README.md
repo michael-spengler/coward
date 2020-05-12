@@ -1,10 +1,8 @@
 ![Coward](img/logo.png)
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Coward is a Deno module for easy interaction with the [Discord API](https://discordapp.com/developers/docs/intro "Discord API")
 
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat)](#contributors-)
 [![license](https://img.shields.io/github/license/fox-cat/coward)](LICENSE)
 [![maintainability](https://img.shields.io/codeclimate/maintainability-percentage/fox-cat/coward)](https://codeclimate.com/github/fox-cat/coward/maintainability)
 [![deno documentation](https://img.shields.io/badge/deno-documentation-blue?style=flat)](https://doc.deno.land/https/deno.land/x/coward/mod.ts)
