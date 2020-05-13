@@ -34,9 +34,9 @@ export class Guild {
 		this.region = data.region;
 
 		if(data.channels) {
-			for(const chan of data.channels) {
-				this.channels.set(chan.id, GuildChannel.new(chan, client));
+			for (const chan of data.channels) {
 				client.channelGuildIDs.set(chan.id, this.id);
+				this.channels.set(chan.id, GuildChannel.new(chan, client));
 			}
 		}
 

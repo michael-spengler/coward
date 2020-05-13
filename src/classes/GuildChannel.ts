@@ -2,6 +2,7 @@ import { Client } from "../Client.ts";
 import {
 	Message,
 	Channel,
+	Guild,
 	GuildTextChannel,
 	GuildVoiceChannel,
 	GuildChannelCategory,
@@ -15,21 +16,25 @@ import {
  */
 export class GuildChannel extends Channel {
 	public name: string;
-	public guild: string; // TODO(fox-cat): guild object
 	public position: number;
 	public nsfw: boolean;
 	public parentID: string; // TODO(fox-cat): channel category object ????
 	//public permission_overwrites: Array<>; // TODO(fox-cat): this whole thing
+	protected _guildID: any;
 
 	constructor(data: any, client: Client) {
 		super(data, client);
 
 		this.name = data.name;
-		this.guild = data.guild_id;
 		this.position = data.position;
 		this.nsfw = data.nsfw;
 		this.parentID = data.parent_id || null;
-		//this.permission_overwrites = data.permission_overwrites;
+		this._guildID = client.channelGuildIDs.get(this.id);
+		//TODO: this.permission_overwrites = data.permission_overwrites;
+	}
+
+	get guild(): Guild | undefined {
+		return this._client.guilds.get(this._guildID);
 	}
 
 	static new(data: any, client: Client) {

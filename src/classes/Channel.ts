@@ -12,10 +12,12 @@ import {
 export class Channel {
 	public id: string;
 	public type: number;
+	protected _client: Client;
 
 	constructor(data: any, client: Client) {
 		this.id = data.id;
 		this.type = data.type;
+		this._client = client;
 	}
 
 	static new(data: any, client: Client) {
