@@ -30,8 +30,6 @@ export class Client extends EventEmitter {
 	public dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>();
 	public channelGuildIDs: Map<string, string> = new Map<string, string>();
 
-	// TODO: Store guilds and etc. in here
-
 	/**
 	 * Create a Client
 	 *
@@ -284,19 +282,13 @@ export class Client extends EventEmitter {
 		if(data !== undefined) json.body = JSON.stringify(data);
 		const response = await fetch(Discord.API + url, json);
 		switch(response.status) {
-			case 400:
-			case 401:
-			case 403:
-			case 404:
-			case 405:
-			case 429:
-			case 502:
+			case 400: case 401: case 403: case 404: case 405: case 429:
+			case 502: case 500: case 503: case 504: case 507: case 508:
 				const json = await response.json();
-				if(json.code) {
-					throw new Error(response.status + ", " + json.code + ", " + json.message);
-				} else {
-					throw new Error(response.status + ", " + response.statusText);
-				}
+				if(json.code)
+					{ throw new Error(response.status + ", " + json.code + ", " + json.message); }
+				else
+					{ throw new Error(response.status + ", " + response.statusText); }
 				break;
 			case 204:
 				return null;
