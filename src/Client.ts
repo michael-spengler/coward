@@ -28,6 +28,7 @@ export class Client extends EventEmitter {
 	public guilds: Map<string, Guild> = new Map<string, Guild>();
 	public users: Map<string, User> = new Map<string, User>();
 	public dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>();
+	public channelGuildIDs: Map<string, string> = new Map<string, string>();
 
 	// TODO: Store guilds and etc. in here
 
@@ -290,8 +291,12 @@ export class Client extends EventEmitter {
 			case 405:
 			case 429:
 			case 502:
-				const { message } = await response.json();
-				throw new Error(response.status + ", " + message);
+				const json = await response.json();
+				if(json.code) {
+					throw new Error(response.status + ", " + json.code + ", " + json.message);
+				} else {
+					throw new Error(response.status + ", " + response.statusText);
+				}
 				break;
 			case 204:
 				return null;
