@@ -169,7 +169,7 @@ export default class Gateway {
 				 */
 				let guild = this.client.guilds.get(message.d.guild_id);
 				if(guild != undefined) {
-					let member = guild.members.get(message.d.id);
+					let member = guild.members.get(message.d.user.id);
 					if(member != undefined) {
 						guild.members.delete(member.user.id);
 						this.client.guilds.set(guild.id, guild);
