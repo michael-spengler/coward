@@ -124,12 +124,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.putReaction("CHANNEL_ID", "MESSAGE_ID", "EMOJI");
 	 */
-	putReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			this.request( "PUT", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me") )
-				.then(() => resolve(true))
-				.catch((err: any) => reject(err))
-		})
+	putReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<void> {
+		return this.request( "PUT", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
 	}
 
 	/**
@@ -137,12 +133,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.deleteReaction("CHANNEL_ID", "MESSAGE_ID", "EMOJI", "USER_ID");
 	 */
-	deleteReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me") )
-				.then(() => resolve(true))
-				.catch((err: any) => reject(err))
-		})
+	deleteReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<void> {
+		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
 	}
 
 	/**
@@ -150,12 +142,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.deleteAllReactions("CHANNEL_ID", "MESSAGE_ID");
 	 */
-	deleteAllReactions(channelID: string, messageID: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTIONS(channelID, messageID) )
-				.then(() => resolve(true))
-				.catch((err: any) => reject(err))
-		});
+	deleteAllReactions(channelID: string, messageID: string): Promise<void> {
+		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTIONS(channelID, messageID));
 	}
 
 	/**
@@ -163,12 +151,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.deleteAllEmojiReactions("CHANNEL_ID", "MESSAGE_ID", "EMOJI");
 	 */
-	deleteAllEmojiReactions(channelID: string, messageID: string, emoji: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION(channelID, messageID, encodeURI(emoji)) )
-				.then(() => resolve(true))
-				.catch((err: any) => reject(err))
-		});
+	deleteAllEmojiReactions(channelID: string, messageID: string, emoji: string): Promise<void> {
+		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION(channelID, messageID, encodeURI(emoji)));
 	}
 
 	// TODO: putChannelPermissions ?
