@@ -14,3 +14,4 @@ export { Role } 					from "./classes/Role.ts";
 export { User } 					from "./classes/User.ts";
 export { ReactionStandardEmoji }	from "./classes/ReactionStandardEmoji.ts";
 export { ReactionCustomEmoji }		from "./classes/ReactionCustomEmoji.ts";
+export { Invite }                   from "./classes/Invite.ts";
