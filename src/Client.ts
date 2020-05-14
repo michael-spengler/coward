@@ -5,7 +5,7 @@ import { permToArray } from "./util/Permission.ts"
 import Gateway from "./gateway/WebsocketHandler.ts";
 import { fear } from "./util/Fear.ts";
 
-import { Channel, Guild, GuildMember, DMChannel, Message, User, Role } from "./Classes.ts";
+import { Channel, Guild, GuildMember, DMChannel, Message, User, Role, Invite } from "./Classes.ts";
 
 /**
  * Class representing the main client
@@ -157,7 +157,26 @@ export class Client extends EventEmitter {
 
 	// TODO: putChannelPermissions ?
 
-	// TODO: getChannelInvite, createChannelInvite ?
+	// TODO: createChannelInvite ?
+
+	/**
+	 * Returns a list of Invite objects
+	 *
+	 *       client.getChannelInvites("CHANNEL_ID");
+	 */
+	getChannelInvites(channelID: string): Promise<Array<Invite>> {
+		return new Promise(async (resolve, reject) => {
+			this.request( "GET", Endpoints.CHANNEL_INVITES(channelID))
+				.then((data: any) => {
+					const arrayInvites: Array<Invite> = [];
+					data.forEach((invite: any) => {
+						arrayInvites.push(new Invite(invite, this))
+					});
+					resolve(arrayInvites);
+				})
+				.catch((err: any) => { reject(err); })
+		});
+	}
 
 	/**
 	 * Start typing in a channel. Bots should usually not use this, however if a bot is responding to a command and expects the computation to take a few seconds, this may be used to let the user know that the bot is processing their message.
