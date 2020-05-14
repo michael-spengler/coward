@@ -6,6 +6,7 @@ import Gateway from "./gateway/WebsocketHandler.ts";
 import { fear } from "./util/Fear.ts";
 
 import { Channel, Guild, GuildMember, DMChannel, Message, User, Role, Invite } from "./Classes.ts";
+import { RequestHandler } from "./rest/RequestHandler.ts";
 
 /**
  * Class representing the main client
@@ -21,9 +22,8 @@ import { Channel, Guild, GuildMember, DMChannel, Message, User, Role, Invite } f
  *            client.connect();
  */
 export class Client extends EventEmitter {
-	private _userAgent: string =
-	`DiscordBot (https://github.com/fox-cat/Client), ${Versions.THIS}`;
 	private gateway: Gateway;
+	private requestHandler: RequestHandler;
 
 	public guilds: Map<string, Guild> = new Map<string, Guild>();
 	public users: Map<string, User> = new Map<string, User>();
@@ -35,9 +35,10 @@ export class Client extends EventEmitter {
 	 *
 	 *       const client = new Coward("TOKEN_HERE");
 	 */
-	public constructor(private token: string, public options: Options.clientConstructor = {}) {
+	public constructor(public token: string, public options: Options.clientConstructor = {}) {
 		super();
 		this.gateway = new Gateway(token, this);
+		this.requestHandler = new RequestHandler(this);
 	}
 
 	/** Connect to the Discord API */
@@ -52,7 +53,7 @@ export class Client extends EventEmitter {
 	 */
 	postChannel(guildID: string, options: Options.postChannel): Promise<Channel> {
 		return new Promise(async (resolve, reject) => {
-			this.request( "POST", Endpoints.GUILD_CHANNELS(guildID), options )
+			this.requestHandler.request( "POST", Endpoints.GUILD_CHANNELS(guildID), options )
 				.then((data: any) => { resolve(Channel.new(data, this)); })
 				.catch((err: any) => { reject(err); });
 		});
@@ -65,7 +66,7 @@ export class Client extends EventEmitter {
 	 */
 	modifyChannel(channelID: string, options: Options.modifyChannel): Promise<Channel> {
 		return new Promise(async (resolve, reject) => {
-			this.request( "PATCH", Endpoints.CHANNEL(channelID), options )
+			this.requestHandler.request( "PATCH", Endpoints.CHANNEL(channelID), options )
 				.then((data: any) => { resolve(Channel.new(data, this)); })
 				.catch((err: any) => { reject(err); });
 		});
@@ -77,7 +78,7 @@ export class Client extends EventEmitter {
 	 *       client.deleteChannel("CHANNEL_ID");
 	 */
 	deleteChannel(channelID: string): void {
-		this.request( "DELETE", Endpoints.CHANNEL(channelID) );
+		this.requestHandler.request( "DELETE", Endpoints.CHANNEL(channelID) );
 	}
 
 	/**
@@ -88,7 +89,7 @@ export class Client extends EventEmitter {
 	postMessage(channelID: string, content: string | Options.postMessage): Promise<Message> {
 		if(typeof content === "string") { content = { content: content } }
 		return new Promise(async (resolve, reject) => {
-			this.request( "POST", Endpoints.CHANNEL_MESSAGES(channelID), content )
+			this.requestHandler.request( "POST", Endpoints.CHANNEL_MESSAGES(channelID), content )
 				.then((data: any) => { resolve(new Message(data, this)); })
 				.catch((err: any) => { reject(err); });
 		});
@@ -102,7 +103,7 @@ export class Client extends EventEmitter {
 	modifyMessage(channelID: string, messageID: string, content: string | Options.modifyMessage): Promise<Message> {
 		if(typeof content === "string") { content = { content: content } }
 		return new Promise(async (resolve, reject) => {
-			this.request( "PATCH", Endpoints.CHANNEL_MESSAGE(channelID, messageID), content )
+			this.requestHandler.request( "PATCH", Endpoints.CHANNEL_MESSAGE(channelID, messageID), content )
 				.then((data: any) => { resolve(new Message(data, this)); })
 				.catch((err: any) => { reject(err); })
 		})
@@ -114,7 +115,7 @@ export class Client extends EventEmitter {
 	 *       client.deleteMessage("CHANNEL_ID", "MESSAGE_ID");
 	 */
 	deleteMessage(channelID: string, messageID: string): void {
-		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE(channelID, messageID) );
+		this.requestHandler.request( "DELETE", Endpoints.CHANNEL_MESSAGE(channelID, messageID) );
 	}
 
 	// TODO: bulkDeleteMessage(channelID: string, amount: number): void {}
@@ -125,7 +126,7 @@ export class Client extends EventEmitter {
 	 *       client.putReaction("CHANNEL_ID", "MESSAGE_ID", "EMOJI");
 	 */
 	putReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<void> {
-		return this.request( "PUT", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
+		return this.requestHandler.request( "PUT", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
 	}
 
 	/**
@@ -134,7 +135,7 @@ export class Client extends EventEmitter {
 	 *       client.deleteReaction("CHANNEL_ID", "MESSAGE_ID", "EMOJI", "USER_ID");
 	 */
 	deleteReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<void> {
-		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
+		return this.requestHandler.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
 	}
 
 	/**
@@ -143,7 +144,7 @@ export class Client extends EventEmitter {
 	 *       client.deleteAllReactions("CHANNEL_ID", "MESSAGE_ID");
 	 */
 	deleteAllReactions(channelID: string, messageID: string): Promise<void> {
-		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTIONS(channelID, messageID));
+		return this.requestHandler.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTIONS(channelID, messageID));
 	}
 
 	/**
@@ -152,7 +153,7 @@ export class Client extends EventEmitter {
 	 *       client.deleteAllEmojiReactions("CHANNEL_ID", "MESSAGE_ID", "EMOJI");
 	 */
 	deleteAllEmojiReactions(channelID: string, messageID: string, emoji: string): Promise<void> {
-		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION(channelID, messageID, encodeURI(emoji)));
+		return this.requestHandler.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION(channelID, messageID, encodeURI(emoji)));
 	}
 
 	// TODO: putChannelPermissions ?
@@ -166,7 +167,7 @@ export class Client extends EventEmitter {
 	 */
 	getChannelInvites(channelID: string): Promise<Array<Invite>> {
 		return new Promise(async (resolve, reject) => {
-			this.request( "GET", Endpoints.CHANNEL_INVITES(channelID))
+			this.requestHandler.request( "GET", Endpoints.CHANNEL_INVITES(channelID))
 				.then((data: any) => {
 					const arrayInvites: Array<Invite> = [];
 					data.forEach((invite: any) => {
@@ -184,7 +185,7 @@ export class Client extends EventEmitter {
 	 *       client.postTyping("CHANNEL_ID");
 	 */
 	postTyping(channelID: string): void {
-		this.request( "POST", Endpoints.CHANNEL_TYPING(channelID) );
+		this.requestHandler.request( "POST", Endpoints.CHANNEL_TYPING(channelID) );
 	}
 
 	/**
@@ -193,7 +194,7 @@ export class Client extends EventEmitter {
 	 *       client.putPin("CHANNEL_ID", "MESSAGE_ID");
 	 */
 	putPin(channelID: string, messageID: string): void {
-		this.request( "PUT", Endpoints.CHANNEL_PIN(channelID, messageID) );
+		this.requestHandler.request( "PUT", Endpoints.CHANNEL_PIN(channelID, messageID) );
 	}
 
 	/**
@@ -202,7 +203,7 @@ export class Client extends EventEmitter {
 	 *       client.deletePin("CHANNEL_ID", "MESSAGE_ID");
 	 */
 	deletePin(channelID: string, messageID: string): void {
-		this.request( "DELETE", Endpoints.CHANNEL_PIN(channelID, messageID) );
+		this.requestHandler.request( "DELETE", Endpoints.CHANNEL_PIN(channelID, messageID) );
 	}
 
 	// TODO: Emoji (https://discord.com/developers/docs/resources/emoji)
@@ -214,7 +215,7 @@ export class Client extends EventEmitter {
 	 */
 	modifyGuild(guildID: string, options: Options.modifyGuild): Promise<Guild> {
 		return new Promise(async (resolve, reject) => {
-			this.request( "PATCH", Endpoints.GUILD(guildID) )
+			this.requestHandler.request( "PATCH", Endpoints.GUILD(guildID) )
 				.then((data: any) => { resolve(new Guild(data, this)); })
 				.catch((err: any) => { reject(err); } );
 		});
@@ -226,7 +227,7 @@ export class Client extends EventEmitter {
 	 *       client.deleteGuild("GUILD_ID");
 	 */
 	deleteGuild(guildID: string): void {
-		this.request( "DELETE", Endpoints.GUILD(guildID) );
+		this.requestHandler.request( "DELETE", Endpoints.GUILD(guildID) );
 	}
 
 	/**
@@ -236,7 +237,7 @@ export class Client extends EventEmitter {
 	 */
 	modifyMember(guildID: string, userID: string, options: Options.modifyMember): Promise<GuildMember> {
 		return new Promise(async (resolve, reject) => {
-			this.request( "PATCH", Endpoints.GUILD_MEMBER(guildID, userID), options )
+			this.requestHandler.request( "PATCH", Endpoints.GUILD_MEMBER(guildID, userID), options )
 				.then((data: any) => { resolve(new GuildMember(data, this)); })
 				.catch((err: any) => { reject(err); });
 		});
@@ -248,7 +249,7 @@ export class Client extends EventEmitter {
 	 *       client.putRole("GUILD_ID", "USER_ID", "ROLE_ID");
 	 */
 	putRole(guildID: string, userID: string, roleID: string): void {
-		this.request( "PUT", Endpoints.GUILD_MEMBER_ROLE(guildID, userID, roleID) )
+		this.requestHandler.request( "PUT", Endpoints.GUILD_MEMBER_ROLE(guildID, userID, roleID) )
 	}
 
 	/**
@@ -257,7 +258,7 @@ export class Client extends EventEmitter {
 	 *       client.removeRole("GUILD_ID", "USER_ID", "ROLE_ID");
 	 */
 	removeRole(guildID: string, userID: string, roleID: string): void {
-		this.request( "DELETE", Endpoints.GUILD_MEMBER_ROLE(guildID, userID, roleID) )
+		this.requestHandler.request( "DELETE", Endpoints.GUILD_MEMBER_ROLE(guildID, userID, roleID) )
 	}
 
 	/**
@@ -266,7 +267,7 @@ export class Client extends EventEmitter {
 	 *       client.removeMember("GUILD_ID", "USER_ID");
 	 */
 	removeMember(guildID: string, userID: string): void {
-		this.request( "DELETE", Endpoints.GUILD_MEMBER(guildID, userID) )
+		this.requestHandler.request( "DELETE", Endpoints.GUILD_MEMBER(guildID, userID) )
 	}
 
 	/**
@@ -275,7 +276,7 @@ export class Client extends EventEmitter {
 	 *       client.putBan("GUILD_ID", "USER_ID", {"delete-message-days": 2});
 	 */
 	putBan(guildID: string, userID: string, options: Options.putBan): void {
-		this.request( "PUT", Endpoints.GUILD_BAN(guildID, userID), options );
+		this.requestHandler.request( "PUT", Endpoints.GUILD_BAN(guildID, userID), options );
 	}
 
 	/**
@@ -284,37 +285,7 @@ export class Client extends EventEmitter {
 	 *       client.deleteBan("GUILD_ID", "USER_ID");
 	 */
 	deleteBan(guildID: string, userID: string): void {
-		this.request( "DELETE", Endpoints.GUILD_BAN(guildID, userID) );
-	}
-
-	private async request(method: string, url: string, data?: any) {
-		let json: {[k: string]: any} = {
-			method: method,
-			headers: {
-				"User-Agent": this._userAgent,
-				"Accept-Encoding": "gzip,deflate",
-				"Content-Type": "application/json",
-				"Authorization": "Bot " + this.token
-			}
-		}
-		if(data !== undefined) json.body = JSON.stringify(data);
-		const response = await fetch(Discord.API + url, json);
-		switch(response.status) {
-			case 400: case 401: case 403: case 404: case 405: case 429:
-			case 502: case 500: case 503: case 504: case 507: case 508:
-				const json = await response.json();
-				if(json.code)
-					{ throw new Error(response.status + ", " + json.code + ", " + json.message); }
-				else
-					{ throw new Error(response.status + ", " + response.statusText); }
-				break;
-			case 204:
-				return null;
-				break;
-			default:
-				return response.json();
-				break;
-		}
+		this.requestHandler.request( "DELETE", Endpoints.GUILD_BAN(guildID, userID) );
 	}
 }
 
@@ -353,7 +324,7 @@ export namespace Options {
 	export interface postMessage {
 		content?: string,
 		tts?: boolean,
-		// TODO file:
+		file?: {name: string, file: File | Blob},
 		embed?: any
 	}
 
