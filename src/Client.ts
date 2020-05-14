@@ -124,8 +124,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.putReaction("CHANNEL_ID", "MESSAGE_ID", "EMOJI");
 	 */
-	putReaction(channelID: string, messageID: string, emoji: string, userID?: string): void {
-		this.request( "PUT", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, emoji, userID || "@me") );
+	putReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<void> {
+		return this.request( "PUT", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
 	}
 
 	/**
@@ -133,9 +133,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.deleteReaction("CHANNEL_ID", "MESSAGE_ID", "EMOJI", "USER_ID");
 	 */
-	deleteReaction(channelID: string, messageID: string, emoji: string, userID?: string): void {
-		if(!userID) { userID = "@me"; }
-		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, emoji, userID) );
+	deleteReaction(channelID: string, messageID: string, emoji: string, userID?: string): Promise<void> {
+		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION_USER(channelID, messageID, encodeURI(emoji), userID || "@me"));
 	}
 
 	/**
@@ -143,8 +142,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.deleteAllReactions("CHANNEL_ID", "MESSAGE_ID");
 	 */
-	deleteAllReactions(channelID: string, messageID: string): void {
-		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTIONS(channelID, messageID) );
+	deleteAllReactions(channelID: string, messageID: string): Promise<void> {
+		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTIONS(channelID, messageID));
 	}
 
 	/**
@@ -152,8 +151,8 @@ export class Client extends EventEmitter {
 	 *
 	 *       client.deleteAllEmojiReactions("CHANNEL_ID", "MESSAGE_ID", "EMOJI");
 	 */
-	deleteAllEmojiReactions(channelID: string, messageID: string, emoji: string): void {
-		this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION(channelID, messageID, emoji) );
+	deleteAllEmojiReactions(channelID: string, messageID: string, emoji: string): Promise<void> {
+		return this.request( "DELETE", Endpoints.CHANNEL_MESSAGE_REACTION(channelID, messageID, encodeURI(emoji)));
 	}
 
 	// TODO: putChannelPermissions ?
