@@ -1,4 +1,4 @@
-import { Coward} from "https://deno.land/x/coward/mod.ts";
+import { Coward } from "https://deno.land/x/coward/mod.ts";
 
 let client = new Coward("TOKEN!");
 
