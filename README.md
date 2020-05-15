@@ -31,9 +31,15 @@ client.on("messageCreate", (message: Message) => {
 client.connect()
 ```
 
-## License, Contributing
+## License
 
-Please refer to [LICENSE](LICENSE) and [CONTRIBUTING](.github/CONTRIBUTING.md)
+Please refer to [LICENSE](LICENSE).
+
+## Contributing
+
+Any contributions to Coward are accepted and encouraged.
+This can range from submitting bug reports, requesting features, improving documentation, or writing code.
+Please refer to [CONTRIBUTING](CONTRIBUTING).
 
 ## Contributors ✨
 
