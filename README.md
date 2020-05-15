@@ -18,17 +18,17 @@ Please don't use this in anything important yet. It is barely functional, and as
 ## Ping-Pong Example
 
 ```typescript
-import { Coward } from "https://deno.land/x/coward/mod.ts";
+import { Coward, Message } from "https://deno.land/x/coward/mod.ts";
 
-let client = new Coward("TOKEN_GO_HERE")
+let client = new Coward("TOKEN")
 
-client.on("messageCreate", (message: any) => {
+client.on("messageCreate", (message: Message) => {
     if(message.content == "!ping") {
-        client.postMessage(message.channel.id, "Pong!");
+        client.postMessage(message.channel.id, "Pong!")
     }
 })
 
-client.connect();
+client.connect()
 ```
 
 ## License, Contributing
