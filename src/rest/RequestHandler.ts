@@ -19,6 +19,7 @@ export class RequestHandler {
 				let form = new FormData();
 
 				form.append("file", data.file.file, data.file.name);
+				console.log(data.file.file["Symbol"]);
 				delete data.file;
 				if(data !== undefined) {
 					form.append("payload_json", data);

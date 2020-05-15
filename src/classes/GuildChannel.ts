@@ -37,7 +37,7 @@ export class GuildChannel extends Channel {
 		return this._client.guilds.get(this._guildID);
 	}
 
-	static new(data: any, client: Client) {
+	static from(data: any, client: Client) {
 		switch(data.type) {
 			case 0:
 				return new GuildTextChannel(data, client);

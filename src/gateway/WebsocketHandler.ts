@@ -88,21 +88,21 @@ export default class Gateway {
 				 * Fired when a Channel is created.
 				 * @event Client#channelCreate
 				 */
-				this.client.emit("channelCreate", Channel.new(message.d, this.client));
+				this.client.emit("channelCreate", Channel.from(message.d, this.client));
 				break;}
 			case "CHANNEL_UPDATE":{
 				/**
 				 * Fired when a Channel is updated.
 				 * @event Client#channelUpdate
 				 */
-				this.client.emit("channelUpdate", Channel.new(message.d, this.client));
+				this.client.emit("channelUpdate", Channel.from(message.d, this.client));
 				break;}
 			case "CHANNEL_DELETE":{
 				/**
 				 * Fired when a Channel is deleted.
 				 * @event Client#channelDelete
 				 */
-				this.client.emit("channelDelete", Channel.new(message.d, this.client));
+				this.client.emit("channelDelete", Channel.from(message.d, this.client));
 				break;}
 			// TODO: CHANNEL_PINS_UPDATE
 			case "GUILD_CREATE": {

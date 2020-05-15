@@ -36,7 +36,7 @@ export class Guild {
 		if(data.channels) {
 			for (const chan of data.channels) {
 				client.channelGuildIDs.set(chan.id, this.id);
-				this.channels.set(chan.id, GuildChannel.new(chan, client));
+				this.channels.set(chan.id, GuildChannel.from(chan, client));
 			}
 		}
 

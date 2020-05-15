@@ -20,7 +20,7 @@ export class Channel {
 		this._client = client;
 	}
 
-	static new(data: any, client: Client) {
+	static from(data: any, client: Client) {
 		switch(data.type) {
 			case 0:
 				return new GuildTextChannel(data, client);
