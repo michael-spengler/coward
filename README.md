@@ -39,7 +39,7 @@ Please refer to [LICENSE](LICENSE).
 
 Any contributions to Coward are accepted and encouraged.
 This can range from submitting bug reports, requesting features, improving documentation, or writing code.
-Please refer to [CONTRIBUTING](CONTRIBUTING).
+Please refer to [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## Contributors ✨
 
