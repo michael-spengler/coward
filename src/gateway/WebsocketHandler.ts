@@ -82,28 +82,32 @@ export default class Gateway {
 				 * @event Client#ready
 				 */
 				this.client.emit("ready", null);
-				break;}
+				break;
+			}
 			case "CHANNEL_CREATE":{
 				/**
 				 * Fired when a Channel is created.
 				 * @event Client#channelCreate
 				 */
 				this.client.emit("channelCreate", Channel.from(message.d, this.client));
-				break;}
+				break;
+			}
 			case "CHANNEL_UPDATE":{
 				/**
 				 * Fired when a Channel is updated.
 				 * @event Client#channelUpdate
 				 */
 				this.client.emit("channelUpdate", Channel.from(message.d, this.client));
-				break;}
+				break;
+			}
 			case "CHANNEL_DELETE":{
 				/**
 				 * Fired when a Channel is deleted.
 				 * @event Client#channelDelete
 				 */
 				this.client.emit("channelDelete", Channel.from(message.d, this.client));
-				break;}
+				break;
+			}
 			// TODO: CHANNEL_PINS_UPDATE
 			case "GUILD_CREATE": {
 				/**
@@ -116,7 +120,8 @@ export default class Gateway {
 				let guild = new Guild(message.d, this.client);
 				this.client.guilds.set(guild.id, guild);
 				this.client.emit("guildCreate", guild);
-				break;}
+				break;
+			}
 			case "GUILD_DELETE":{
 				/**
 				 * Fired when
@@ -127,27 +132,31 @@ export default class Gateway {
 				let guild = new Guild(message.d, this.client);
 				this.client.guilds.delete(guild.id);
 				this.client.emit("guildDelete", new Guild(message.d, this.client));
-				break;}
+				break;
+			}
 			case "GUILD_BAN_ADD":{
 				/**
 				 * Fired when a user is banned from the guild.
 				 * @event Client#guildBanAdd
 				 */
 				this.client.emit("guildBanAdd", this.client.guilds.get(message.d.guild_id), new User(message.d.user, this.client));
-				break;}
+				break;
+			}
 			case "GUILD_BAN_REMOVE":{
 				/**
 				 * Fired when a user is unbanned from the guild.
 				 * @event Client#guildBanAdd
 				 */
 				this.client.emit("guildBanRemove", this.client.guilds.get(message.d.guild_id), new User(message.d.user, this.client));
-				break;}
+				break;
+			}
 			case "GUILD_EMOJIS_UPDATE":{
 				//TODO: GUILD_EMOJIS_UPDATE
 				break;}
 			case "GUILD_INTEGRATIONS_UPDATE":{
 				//TODO: GUILD_INTEGRATIONS_UPDATE
-				break;}
+				break;
+			}
 			case "GUILD_MEMBER_ADD":{
 				/**
 				 * Fired when a new user joins the guild.
@@ -180,44 +189,52 @@ export default class Gateway {
 			}
 			case "GUILD_MEMBER_UPDATE":{
 				// TODO: https://discord.com/developers/docs/topics/gateway#guild-member-update
-				break;}
+				break;
+			}
 			case "GUILD_MEMBERS_CHUNK":{
 				// TODO: https://discord.com/developers/docs/topics/gateway#guild-members-chunk
-				break;}
+				break;
+			}
 			case "GUILD_ROLE_CREATE":{
 				/**
 				 * Fired when a role is created in a guild.
 				 * @event Client#guildRoleCreate
 				 */
 				this.client.emit("guildRoleCreate", message.d.guild_id, new Role(message.d.role, this.client));
-				break;}
+				break;
+			}
 			case "GUILD_ROLE_UPDATE":{
 				/**
 				 * Fired when a role is deleted in a guild.
 				 * @event Client#guildRoleUpdate
 				 */
 				this.client.emit("guildRoleUpdate", message.d.guild_id, new Role(message.d.role, this.client));
-				break;}
+				break;
+			}
 			case "GUILD_ROLE_DELETE":{
 				/**
 				 * Fired when a role is deleted in a guild.
 				 * @event Client#guildRoleDelete
 				 */
 				this.client.emit("guildRoleDelete", message.d.guild_id, message.d.role_id);
-				break;}
+				break;
+			}
 			case "INVITE_CREATE":{
 				//TODO: https://discord.com/developers/docs/topics/gateway#invite-create
-				break;}
+				break;
+			}
 			case "INVITE_DELETE":{
 				//TODO: https://discord.com/developers/docs/topics/gateway#invite-delete
-				break;}
+				break;
+			}
 			case "MESSAGE_CREATE":{
 				/**
 				 * Fired when a message is created
 				 * @event Client#messageCreate
 				 */
 				this.client.emit("messageCreate", new Message(message.d, this.client));
-				break;}
+				break;
+			}
 			case "MESSAGE_UPDATE":{
 				/**
 				 * Fired when a message is updated
@@ -225,24 +242,28 @@ export default class Gateway {
 				 */
 				if(!message.d.author) break; // FIX: I'm not sure why, but sending a message with an embed attached triggers the messageUpdate event ...?
 				this.client.emit("messageUpdate", new Message(message.d, this.client));
-				break;}
+				break;
+			}
 			case "MESSAGE_DELETE":{
 				/**
 				 * Fired when a message is deleted
 				 * @event Client#messageDelete
 				 */
 				this.client.emit("messageDelete", message.d.id, message.d.channel_id); //TODO
-				break;}
+				break;
+			}
 			case "MESSAGE_DELETE_BULK":{
 				/**
 				 * Fired when mesages are deleted in bulk.
 				 * @event Client#messageDeleteBulk
 				 */
 				this.client.emit("messageDeleteBulk", message.d.ids, message.d.channel_id);
-				break;}
+				break;
+			}
 			case "MESSAGE_REACTION_ADD":{
 				//TODO: https://discord.com/developers/docs/topics/gateway#message-reaction-add (and all other reactions)
-				break;}
+				break;
+			}
 			//TODO: All other ones lol
 		}
 	}

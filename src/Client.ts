@@ -174,6 +174,32 @@ export class Client extends EventEmitter {
 	deleteBan(guildID: string, userID: string): void {
 		this.requestHandler.request( "DELETE", Endpoints.GUILD_BAN(guildID, userID) );
 	}
+
+	postRole(guildID: string, options: Options.postRole): Promise<Role> {
+		return new Promise(async (resolve, reject) => {
+			this.requestHandler.request( "POST", Endpoints.GUILD_ROLES(guildID), options )
+				.then((data: any) => { resolve(new Role(data, this)) })
+				.catch((err: any) => { reject(err) })
+		})
+	}
+
+	// TODO: modify role positions https://discord.com/developers/docs/resources/guild#modify-guild-role-positions
+
+	modifyRole(guildID: string, roleID: string, options: Options.modifyRole): Promise<Role> {
+		return new Promise(async (resolve, reject) => {
+			this.requestHandler.request( "PATCH", Endpoints.GUILD_ROLE(guildID, roleID), options )
+				.then((data: any) => { resolve(new Role(data, this)) })
+				.catch((err: any) => { reject(err) })
+		})
+	}
+
+	deleteRole(guildID: string, roleID: string): Promise<void> {
+		return this.requestHandler.request( "DELETE", Endpoints.GUILD_ROLE(guildID, roleID) )
+	}
+
+	// TODO: prune https://discord.com/developers/docs/resources/guild#modify-guild-role-positions
+
+	
 }
 
 /** Namespace for functions */
@@ -252,5 +278,21 @@ export namespace Options {
 		/** Amount of days to delete messages for (between 1-7) */
 		"delete-message-days"?: number
 		reason?: string
+	}
+
+	export interface postRole {
+		name?: string,
+		//permissions?: number,
+		color?: number,
+		hoist?: boolean,
+		mentionable?: boolean
+	}
+
+	export interface modifyRole {
+		name?: string,
+		//permissions?: number,
+		color?: number,
+		hoist?: boolean,
+		mentionable?: boolean
 	}
 }
