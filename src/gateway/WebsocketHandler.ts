@@ -14,7 +14,6 @@ import { Guild, GuildMember, Message, User, Role, Channel } from "../Classes.ts"
 export default class Gateway {
 	public sock!: WebSocket;
 	private sequence: any = null;
-
 	constructor(private token: string, private client: Client) {}
 
 	public async connect(): Promise<void> {
@@ -56,6 +55,18 @@ export default class Gateway {
 				},
 			},
 		}));
+	}
+
+	public async modifyPresence(settings: any) {
+		await this.sock.send(JSON.stringify({
+			op: 3,
+			d: {
+				afk: false,
+				game: settings.game,
+				status: settings.status,
+				since: (settings.status === "idle") ? Date.now() : 0
+			}
+		}))
 	}
 
 	private async handleWSMessage(message: any) {

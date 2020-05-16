@@ -42,6 +42,12 @@ export class Client extends EventEmitter {
 		this.gateway.connect()
 	}
 
+	modifyPresence(
+		options: Options.modifyPresence = { status: "online" }
+	): Promise<void> {
+		return this.gateway.modifyPresence(options)
+	}
+
 	/** Post a channel in a guild. Requires the `MANAGE_CHANNELS` permission. */
 	postChannel(
 		/** Guild to create the channel in */
@@ -361,6 +367,14 @@ export class Client extends EventEmitter {
 export namespace Options {
 	export interface clientConstructor {
 
+	}
+
+	export interface modifyPresence {
+		status?: "online" | "dnd" | "idle" | "invisible" | "offline",
+		game?: {
+			name: string,
+			type: number
+		}
 	}
 
 	export interface postChannel {
