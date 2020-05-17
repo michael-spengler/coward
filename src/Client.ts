@@ -4,7 +4,19 @@ import { Permissions, Versions, Discord, Endpoints } from "./util/Constants.ts"
 import { permToArray } from "./util/Permission.ts";
 import { fear } from "./util/Fear.ts"
 
-import { Channel, Guild, GuildMember, DMChannel, Message, User, Role, Invite } from "./Classes.ts"
+import {
+	Channel,
+	Guild,
+	GuildMember,
+	GuildEmoji,
+	ReactionCustomEmoji,
+	ReactionStandardEmoji,
+	DMChannel,
+	Message,
+	User,
+	Role,
+	Invite
+} from "./Classes.ts"
 import { RequestHandler } from "./network/rest/RequestHandler.ts"
 import Gateway from "./network/gateway/WebsocketHandler.ts"
 
@@ -41,16 +53,16 @@ export class Client extends EventEmitter {
 	public evtReady = new Evt();
 
 	/** Fired when a channel is created. */
-	public evtChannelCreate = new Evt<Channel>();
+	public evtChannelCreate = new Evt<{channel: Channel}>();
 
 	/** Fired when a channel is updated. */
-	public evtChannelUpdate = new Evt<Channel>();
+	public evtChannelUpdate = new Evt<{channel: Channel}>();
 
 	/** Fired when a channel is deleted. */
-	public evtChannelDelete = new Evt<Channel>();
+	public evtChannelDelete = new Evt<{channel: Channel}>();
 
 	/** Fired when a message is pinned or unpinned in a text channel. This is not fired when a pinned message is deleted. */
-	public evtChannelPinsUpdate = new Evt<Channel>();
+	public evtChannelPinsUpdate = new Evt<{channel: Channel}>();
 
 	/**
 	 * Fired when
@@ -58,14 +70,14 @@ export class Client extends EventEmitter {
 	 *	- A guild becomes available to the client.
 	 *	- The client joins a guild.
 	 */
-	public evtGuildCreate = new Evt<Guild>();
+	public evtGuildCreate = new Evt<{guild: Guild}>();
 
 	/**
 	 * Fired when
 	 *	- The client leaves or is removed from a guild.
 	 *	- A guild becomes unavailable.
 	 */
-	public evtGuildDelete = new Evt<Guild>();
+	public evtGuildDelete = new Evt<{guild: Guild}>();
 
 	/** Fired when a user is banned from a guild. */
 	public evtGuildBanAdd = new Evt<{guild: Guild, user: User}>();
@@ -77,13 +89,13 @@ export class Client extends EventEmitter {
 	public evtGuildEmojisUpdate = new Evt<{guild: Guild, emojis: Array<GuildEmoji>}>();
 
 	/** Fired when a guild's integrations are updated. */
-	public evtGuildIntegrationsUpdate = new Evt<Guild>();
+	public evtGuildIntegrationsUpdate = new Evt<{guild: Guild}>();
 
 	/** Fired when a new user joins a guild. */
 	public evtGuildMemberAdd = new Evt<{guild: Guild, member: GuildMember}>();
 
 	/** Fired when a user leaves or is removed from a guild. */
-	public evtGuildMemberRemove = new Evt<{guild: Guild, user: User}>();
+	public evtGuildMemberRemove = new Evt<{guild: Guild, member: GuildMember}>();
 
 	/** Fired when a guild member is updated. */
 	//TODO: Is there a better way of doing this? :v
@@ -98,15 +110,15 @@ export class Client extends EventEmitter {
 	public evtGuildRoleUpdate = new Evt<{guild: Guild, role: Role}>();
 
 	/** Fired when a guild role is deleted. */
-	public evtGuildRoleDelete = new Evt<{guild: Guild, role: Role}>();
+	public evtGuildRoleDelete = new Evt<{guild: Guild, roleID: string}>();
 
 	// TODO: Invites (see https://discord.com/developers/docs/topics/gateway#invites)
 
 	/** Fired when a message is created. */
-	public evtMessageCreate = new Evt<Message>();
+	public evtMessageCreate = new Evt<{message: Message}>();
 
 	/** Fired when a message is updated. */
-	public evtMessageUpdate = new Evt<Message>();
+	public evtMessageUpdate = new Evt<{message: Message}>();
 
 	/** Fired when a message is deleted. */
 	public evtMessageDelete = new Evt<{messageID: string, channelID: string}>();
@@ -114,13 +126,13 @@ export class Client extends EventEmitter {
 	/** Fired when messages are deleted in bulk. */
 	public evtMessageDeleteBulk = new Evt<{messageIDs: Array<string>, channelID: string}>();
 
-	/** Fired when a reaction is added to a message. */
+	/** TODO: Fired when a reaction is added to a message. */
 	public evtMessageReactionAdd = new Evt<{user: User, channel: Channel, emoji: ReactionStandardEmoji | ReactionCustomEmoji, messageID: string}>();
 
-	/** Fired when a reaction is removed from a message. */
+	/** TODO: Fired when a reaction is removed from a message. */
 	public evtMessageReactionRemove = new Evt<{user: User, channel: Channel, emoji: ReactionStandardEmoji | ReactionCustomEmoji, messageID: string}>();
 
-	/** Fired when a user removes all reactions from a message. */
+	/** TODO: Fired when a user removes all reactions from a message. */
 	public evtMessageReactionRemoveAll = new Evt<{channel: Channel, messageID: string}>()
 
 	// TODO: Presence ...https://discord.com/developers/docs/topics/gateway#presence-update
