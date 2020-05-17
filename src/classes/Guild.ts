@@ -8,47 +8,57 @@ import {
 	GuildNewsChannel,
 	GuildStoreChannel,
 	GuildMember,
-	GuildEmoji
+	GuildEmoji,
+	Role
 } from "../Classes.ts";
 
 type GuildChannelTypes = GuildTextChannel | GuildVoiceChannel | GuildChannelCategory | GuildNewsChannel | GuildStoreChannel
 
 /** Class representing a guild */
 export class Guild {
-	public id: string;
-	public name: string;
-	public ownerID: string;
-	public region: string;
+	public id: string
+	public name: string
+	public ownerID: string
+	public region: string
 
 	/** A map of guild channels. */
-	public channels: Map<string, GuildChannelTypes | any> = new Map<string, GuildChannelTypes | any>();
+	public channels: Map<string, GuildChannelTypes | any> = new Map<string, GuildChannelTypes | any>()
 	/** A map of members */
-	public members: Map<string, GuildMember> = new Map<string, GuildMember>();
+	public members: Map<string, GuildMember> = new Map<string, GuildMember>()
 	/** A map of emoji */
-	public emojis: Map<string, GuildEmoji> = new Map<string, GuildEmoji>();
+	public emojis: Map<string, GuildEmoji> = new Map<string, GuildEmoji>()
+	/** A map of guild roles */
+	public roles: Map<string, Role> = new Map<string, Role>()
 
 	constructor(data: any, client: Client) {
-		this.id = data.id;
-		this.name = data.name;
-		this.ownerID = data.ownerID;
-		this.region = data.region;
+		this.id = data.id
+		this.name = data.name
+		this.ownerID = data.ownerID
+		this.region = data.region
 
 		if(data.channels) {
 			for (const chan of data.channels) {
-				client.channelGuildIDs.set(chan.id, this.id);
-				this.channels.set(chan.id, GuildChannel.from(chan, client));
+				client.channelGuildIDs.set(chan.id, this.id)
+				this.channels.set(chan.id, GuildChannel.from(chan, client))
 			}
 		}
 
 		if(data.members) {
 			for(const mem of data.members) {
-				this.members.set(mem.user.id, new GuildMember(mem, client));
+				this.members.set(mem.user.id, new GuildMember(mem, client))
 			}
 		}
 
 		if(data.emojis) {
 			for(const e of data.emojis) {
-				this.emojis.set(e.id, new GuildEmoji(e, client));
+				this.emojis.set(e.id, new GuildEmoji(e, client))
+			}
+		}
+
+		if(data.roles) {
+			for(const role of data.roles) {
+				client.roleGuildIDs.set(role.id, this.id)
+				this.roles.set(role.id, new Role(role, client))
 			}
 		}
 	}
