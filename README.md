@@ -51,6 +51,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/Joralmo"><img src="https://avatars0.githubusercontent.com/u/19753876?v=4" width="100px;" alt=""/><br /><sub><b>Joralmo</b></sub></a><br /><a href="https://github.com/fox-cat/coward/commits?author=Joralmo" title="Code">💻</a> <a href="https://github.com/fox-cat/coward/issues?q=author%3AJoralmo" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/userterminal"><img src="https://avatars3.githubusercontent.com/u/55012346?v=4" width="100px;" alt=""/><br /><sub><b>Exists</b></sub></a><br /><a href="https://github.com/fox-cat/coward/commits?author=userterminal" title="Code">💻</a></td>
   </tr>
 </table>
 
