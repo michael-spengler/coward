@@ -17,6 +17,7 @@ export default class Gateway {
 
 	private sequence: any = null
 	private sessionID: string = ""
+	private heartbeatInt: number = 0
 	private receivedAck: boolean = true
 	private status: string = "connecting"
 
@@ -62,27 +63,18 @@ export default class Gateway {
 	}
 
 	private singleHeartbeat() {
-		this.sock.send(JSON.stringify({
-			op: 1,
-			d: this.sequence,
-		}));
+		if(this.receivedAck) {
+			this.sock.send(JSON.stringify({
+				op: 1,
+				d: this.sequence,
+			}));
+		} else {
+			this.attemptReconnect()
+		}
 		this.receivedAck = false
 	}
 
-	private heartbeat(int: any) {
-		setInterval(() => {
-			try {
-				if(this.receivedAck) {
-					this.singleHeartbeat()
-				} else {
-					this.attemptReconnect()
-				}
-			} catch (err) {
-				this.attemptReconnect()
-				fear("error", "something went wrong when trying to heartbeat, attempting reconnect: \n" + red(err.stack))
-			}
-		}, int);
-	}
+	private heartbeat: any;
 
 	private async identify() {
 		await this.sock.send(JSON.stringify({
@@ -126,7 +118,14 @@ export default class Gateway {
 				this.attemptReconnect()
 				break
 			case 10:
-				this.heartbeat(message.d.heartbeat_interval)
+				this.heartbeatInt = message.d.heartbeat_interval
+				this.heartbeat = setInterval(() => {
+					try {
+						this.singleHeartbeat()
+					} catch (err) {
+						fear("error", "something went wrong when trying to heartbeat \n" + red(err.stack))
+					}
+				}, this.heartbeatInt)
 				break;
 			case 11:
 				this.receivedAck = true
@@ -139,6 +138,8 @@ export default class Gateway {
 
 	private async close() {
 		this.receivedAck = true
+		if (this.heartbeat) clearInterval(this.heartbeat)
+		this.heartbeatInt = 0
 		if (!this.sock.isClosed) this.sock.close(1000)
 	}
 
