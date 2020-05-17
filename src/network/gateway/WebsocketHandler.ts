@@ -4,28 +4,47 @@ import {
 	WebSocket,
 
 	green, red, blue, bold, reset
-} from "../../deps.ts";
-import { Versions, Discord, Endpoints } from "../util/Constants.ts";
-import { fear } from "../util/Fear.ts";
+} from "../../../deps.ts";
+import { Versions, Discord, Endpoints } from "../../util/Constants.ts";
+import { fear } from "../../util/Fear.ts";
 
-import { Client } from "../Client.ts";
-import { Guild, GuildMember, Message, User, Role, Channel } from "../Classes.ts";
+import { Client } from "../../Client.ts";
+import { Guild, GuildMember, Message, User, Role, Channel } from "../../Classes.ts";
 
 export default class Gateway {
 	public sock!: WebSocket;
-	private sequence: any = null;
+
+	private sequence: any = null
+	private sessionID: string = ""
+	private receivedAck: boolean = true
+	private status: string = "connecting"
 	constructor(private token: string, private client: Client) {}
 
 	public async connect(): Promise<void> {
 		try {
 			this.sock = await connectWebSocket(`${Discord.GATEWAY}/v=${Versions.GATEWAY}`);
-			fear("debug", "successfully connected to websocket");
+
+			if(this.status === "resuming") {
+				this.status = "handshaking"
+				await this.sock.send(JSON.stringify({
+					op: 6,
+					d: {
+						token: this.token,
+						session_id: this.sessionID,
+						seq: this.sequence
+					}
+				}))
+			} else {
+				this.status = "handshaking"
+				await this.singleHeartbeat()
+				await this.identify()
+			}
 
 			for await (const msg of this.sock) {
 				if (typeof msg === "string") {
 					this.handleWSMessage(JSON.parse(msg));
 				} else if (isWebSocketCloseEvent(msg)) {
-					fear("debug", "websocket was closed");
+					fear("error", "websocket was closed");
 					this.onClose(msg);
 				}
 			}
@@ -34,12 +53,31 @@ export default class Gateway {
 		}
 	}
 
+	private async attemptReconnect() {
+		this.status = "resuming"
+		await this.close()
+		await this.connect()
+	}
+
+	private singleHeartbeat() {
+		this.sock.send(JSON.stringify({
+			op: 1,
+			d: this.sequence,
+		}));
+		this.receivedAck = false
+	}
+
 	private heartbeat(int: any) {
 		setInterval(() => {
-			this.sock.send(JSON.stringify({
-				op: 1,
-				d: this.sequence,
-			}));
+			try {
+				if(this.receivedAck) {
+					this.singleHeartbeat()
+				} else {
+					this.attemptReconnect()
+				}
+			} catch (err) {
+				fear("error", "something went wrong when trying to heartbeat: \n" + red(err.stack))
+			}
 		}, int);
 	}
 
@@ -80,10 +118,16 @@ export default class Gateway {
 					d: this.sequence,
 				}));
 				break;
+			case 7:
+			case 9:
+				this.attemptReconnect()
+				break
 			case 10:
-				this.heartbeat(message.d.heartbeat_interval);
-				this.identify();
+				this.heartbeat(message.d.heartbeat_interval)
 				break;
+			case 11:
+				this.receivedAck = true
+				break
 		}
 
 		switch(message.t) {
@@ -92,8 +136,10 @@ export default class Gateway {
 				 * Fired when the Client is ready
 				 * @event Client#ready
 				 */
-				this.client.emit("ready", null);
-				break;
+				this.status = "ready"
+				this.sessionID = message.d.session_id
+				this.client.emit("ready", null)
+				break
 			}
 			case "CHANNEL_CREATE":{
 				/**
@@ -279,7 +325,13 @@ export default class Gateway {
 		}
 	}
 
+	private async close() {
+		this.receivedAck = true
+		if (!this.sock.isClosed) this.sock.close(1000)
+	}
+
 	private async onClose(message: any) {
+		this.status = "disconnected"
 		if (message.code) {
 			switch (message.code) {
 				case 4000:
@@ -354,6 +406,6 @@ export default class Gateway {
 					break;
 			}
 		}
-		if (!this.sock.isClosed) this.sock.close(1000);
+		this.close()
 	}
 }

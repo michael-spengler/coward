@@ -1,12 +1,12 @@
 import { EventEmitter, red, bold } from "../deps.ts"
 
 import { Permissions, Versions, Discord, Endpoints } from "./util/Constants.ts"
-import { permToArray } from "./util/Permission.ts"
-import Gateway from "./gateway/WebsocketHandler.ts"
+import { permToArray } from "./util/Permission.ts";
 import { fear } from "./util/Fear.ts"
 
 import { Channel, Guild, GuildMember, DMChannel, Message, User, Role, Invite } from "./Classes.ts"
-import { RequestHandler } from "./rest/RequestHandler.ts"
+import { RequestHandler } from "./network/rest/RequestHandler.ts"
+import Gateway from "./network/gateway/WebsocketHandler.ts"
 
 /**
  * Class representing the main client
@@ -31,7 +31,9 @@ export class Client extends EventEmitter {
 	public channelGuildIDs: Map<string, string> = new Map<string, string>()
 
 	/** Create a Client */
-	public constructor(public token: string, public options: Options.clientConstructor = {}) {
+	public constructor(public token: string, public options: Options.clientConstructor = {
+		autoreconnect: true,
+	}) {
 		super()
 		this.gateway = new Gateway(token, this)
 		this.requestHandler = new RequestHandler(this)
@@ -366,6 +368,7 @@ export class Client extends EventEmitter {
 /** Namespace for functions */
 export namespace Options {
 	export interface clientConstructor {
+		autoreconnect: boolean,
 
 	}
 

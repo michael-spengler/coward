@@ -1,5 +1,5 @@
-import { Client } from "../Client.ts"
-import { Permissions, Versions, Discord, Endpoints } from "../util/Constants.ts";
+import { Client } from "../../Client.ts"
+import { Permissions, Versions, Discord, Endpoints } from "../../util/Constants.ts";
 
 export class RequestHandler {
 	private _userAgent: string = `DiscordBot (https://github.com/fox-cat/coward), ${Versions.THIS}`;
