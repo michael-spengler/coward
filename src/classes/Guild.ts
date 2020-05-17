@@ -57,7 +57,6 @@ export class Guild {
 
 		if(data.roles) {
 			for(const role of data.roles) {
-				client.roleGuildIDs.set(role.id, this.id)
 				this.roles.set(role.id, new Role(role, client))
 			}
 		}

@@ -100,24 +100,40 @@ export function handleEvent(client: Client, message: any) {
 		}
 		// TODO: case "GUILD_MEMBER_CHUNK"
 		case "GUILD_ROLE_CREATE": {
-			const guild = client.guilds.get(message.d.guild_id)
+			let guild = client.guilds.get(message.d.guild_id)
 
 			if(guild == undefined) break
-			client.evtGuildRoleCreate.post({guild: guild, role: new Role(message.d.role, client)})
+			let role = new Role(message.d.role, client)
+
+			guild.roles.set(role.id, role)
+			client.guilds.set(guild.id, guild)
+
+			client.evtGuildRoleCreate.post({guild: guild, role: role})
 			break
 		}
 		case "GUILD_ROLE_UPDATE": {
-			const guild = client.guilds.get(message.d.guild_id)
+		 	let guild = client.guilds.get(message.d.guild_id)
 
 			if(guild == undefined) break
+			let role = new Role(message.d.role, client)
+
+			guild.roles.set(role.id, role)
+			client.guilds.set(guild.id, guild)
+
 			client.evtGuildRoleUpdate.post({guild: guild, role: new Role(message.d.role, client)})
 			break
 		}
 		case "GUILD_ROLE_DELETE":  {
-			const guild = client.guilds.get(message.d.guild_id)
+			let guild = client.guilds.get(message.d.guild_id)
 
 			if(guild == undefined) break
-			client.evtGuildRoleDelete.post({guild: guild, roleID: message.d.role_id})
+			let role = guild.roles.get(message.d.role_id)
+
+			if(role == undefined) break
+			guild.roles.delete(role.id)
+			client.guilds.set(guild.id, guild)
+
+			client.evtGuildRoleDelete.post({guild: guild, role: role})
 			break
 		}
 		// TODO: invites

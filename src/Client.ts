@@ -41,7 +41,6 @@ export class Client {
 	public users: Map<string, User> = new Map<string, User>()
 	public dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>()
 	public channelGuildIDs: Map<string, string> = new Map<string, string>()
-	public roleGuildIDs: Map<string, string> = new Map<string, string>()
 
 	/** Create a Client */
 	public constructor(public token: string, public options: Options.clientConstructor = {}) {
@@ -110,7 +109,7 @@ export class Client {
 	public evtGuildRoleUpdate: Evt<{guild: Guild, role: Role}> = new Evt<{guild: Guild, role: Role}>();
 
 	/** Fired when a guild role is deleted. */
-	public evtGuildRoleDelete: Evt<{guild: Guild, roleID: string}> = new Evt<{guild: Guild, roleID: string}>();
+	public evtGuildRoleDelete: Evt<{guild: Guild, role: Role}> = new Evt<{guild: Guild, role: Role}>();
 
 	// TODO: Invites (see https://discord.com/developers/docs/topics/gateway#invites)
 

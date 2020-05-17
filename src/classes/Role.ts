@@ -11,9 +11,6 @@ export class Role {
 	public managed: boolean
 	public mentionable: boolean
 
-	private _client: Client
-	private _guildID: any
-
 	constructor(data: any, client: Client) {
 		this.id = data.id
 		this.name = data.name
@@ -21,12 +18,5 @@ export class Role {
 		this.hoist = data.hoist
 		this.managed = data.managed
 		this.mentionable = data.mentionable
-
-		this._client = client
-		this._guildID = client.roleGuildIDs.get(this.id)
-	}
-
-	get guild(): Guild | undefined {
-		return this._client.guilds.get(this._guildID)
 	}
 }
