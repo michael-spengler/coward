@@ -10,6 +10,7 @@ import { fear } from "../../util/Fear.ts";
 
 import { Client } from "../../Client.ts";
 import { Guild, GuildMember, Message, User, Role, Channel } from "../../Classes.ts";
+import { handleEvent } from "./EventHandler.ts"
 
 export default class Gateway {
 	public sock!: WebSocket;
@@ -130,17 +131,9 @@ export default class Gateway {
 				break
 		}
 
+		handleEvent(this.client, message)
+
 		switch(message.t) {
-			case "READY": {
-				/**
-				 * Fired when the Client is ready
-				 * @event Client#ready
-				 */
-				this.status = "ready"
-				this.sessionID = message.d.session_id
-				this.client.emit("ready", null)
-				break
-			}
 			case "CHANNEL_CREATE":{
 				/**
 				 * Fired when a Channel is created.

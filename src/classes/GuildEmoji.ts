@@ -7,7 +7,7 @@ export class GuildEmoji {
 	public name: string;
 	public roles: Map<string, Role> = new Map<string, Role>();
 	/** User that created the emoji */
-	public user: User | undefined;
+	public user!: User;
 	public requireColons: boolean;
 	/** Whether the emoji is managed */
 	public managed: boolean;
