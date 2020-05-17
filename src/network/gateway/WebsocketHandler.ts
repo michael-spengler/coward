@@ -78,7 +78,8 @@ export default class Gateway {
 					this.attemptReconnect()
 				}
 			} catch (err) {
-				fear("error", "something went wrong when trying to heartbeat: \n" + red(err.stack))
+				this.attemptReconnect()
+				fear("error", "something went wrong when trying to heartbeat, attempting reconnect: \n" + red(err.stack))
 			}
 		}, int);
 	}
@@ -134,13 +135,6 @@ export default class Gateway {
 
 		handleEvent(this.client, message)
 
-		switch(message.t) {
-			case "MESSAGE_REACTION_ADD":{
-				//TODO: https://discord.com/developers/docs/topics/gateway#message-reaction-add (and all other reactions)
-				break;
-			}
-			//TODO: All other ones lol
-		}
 	}
 
 	private async close() {

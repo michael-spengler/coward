@@ -1,4 +1,4 @@
-import { Evt, EventEmitter, red, bold } from "../deps.ts"
+import { Evt, red, bold } from "../deps.ts"
 
 import { Permissions, Versions, Discord, Endpoints } from "./util/Constants.ts"
 import { permToArray } from "./util/Permission.ts";
@@ -33,7 +33,7 @@ import Gateway from "./network/gateway/WebsocketHandler.ts"
  *
  *            client.connect()
  */
-export class Client extends EventEmitter {
+export class Client {
 	private gateway: Gateway
 	private requestHandler: RequestHandler
 
@@ -44,7 +44,6 @@ export class Client extends EventEmitter {
 
 	/** Create a Client */
 	public constructor(public token: string, public options: Options.clientConstructor = {}) {
-		super()
 		this.gateway = new Gateway(token, this)
 		this.requestHandler = new RequestHandler(this)
 	}
