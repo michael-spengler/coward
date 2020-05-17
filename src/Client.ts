@@ -38,19 +38,19 @@ export class Client extends EventEmitter {
 	}
 
 	/** Fired when the client is ready. */
-	public evtReady = new Evt()
+	public evtReady = new Evt();
 
 	/** Fired when a channel is created. */
-	public evtChannelCreate = new Evt<Channel>()
+	public evtChannelCreate = new Evt<Channel>();
 
 	/** Fired when a channel is updated. */
-	public evtChannelUpdate = new Evt<Channel>()
+	public evtChannelUpdate = new Evt<Channel>();
 
 	/** Fired when a channel is deleted. */
-	public evtChannelDelete = new Evt<Channel>()
+	public evtChannelDelete = new Evt<Channel>();
 
 	/** Fired when a message is pinned or unpinned in a text channel. This is not fired when a pinned message is deleted. */
-	public evtPinsUpdate = new Evt<Channel>()
+	public evtChannelPinsUpdate = new Evt<Channel>();
 
 	/**
 	 * Fired when
@@ -58,109 +58,75 @@ export class Client extends EventEmitter {
 	 *	- A guild becomes available to the client.
 	 *	- The client joins a guild.
 	 */
-	public evtGuildCreate = new Evt<Guild>()
+	public evtGuildCreate = new Evt<Guild>();
 
 	/**
 	 * Fired when
 	 *	- The client leaves or is removed from a guild.
 	 *	- A guild becomes unavailable.
 	 */
-	public evtGuildDelete = new Evt<Guild>()
+	public evtGuildDelete = new Evt<Guild>();
 
 	/** Fired when a user is banned from a guild. */
-	public evtGuildBanAdd = new Evt<Guild, User>()
+	public evtGuildBanAdd = new Evt<{guild: Guild, user: User}>();
 
 	/** Fired when a user is unbanned from a guild. */
-	public evtGuildBanRemove = new Evt<Guild, User>()
+	public evtGuildBanRemove = new Evt<{guild: Guild, user: User}>();
 
 	/** Fired when a guild's emojis have been updated. */
-	public evtGuildEmojisUpdate = new Evt<Guild, Array<GuildEmoji>>()
+	public evtGuildEmojisUpdate = new Evt<{guild: Guild, emojis: Array<GuildEmoji>}>();
 
 	/** Fired when a guild's integrations are updated. */
-	public evtGuildIntegrationsUpdate = new Evt<Guild>()
+	public evtGuildIntegrationsUpdate = new Evt<Guild>();
 
 	/** Fired when a new user joins a guild. */
-	public evtGuildMemberAdd = new Evt<Guild, GuildMember>()
+	public evtGuildMemberAdd = new Evt<{guild: Guild, member: GuildMember}>();
 
 	/** Fired when a user leaves or is removed from a guild. */
-	public evtGuildMemberRemove = new Evt<Guild, User>()
+	public evtGuildMemberRemove = new Evt<{guild: Guild, user: User}>();
 
-	/**
-	 * Fired when a guild member is updated.
-	 * @property {Guild} guild
-	 * @property {GuildMember} member
-	 * @property {GuildMember} oldMember
-	 */
+	/** Fired when a guild member is updated. */
 	//TODO: Is there a better way of doing this? :v
-	public evtGuildMemberUpdate = new Evt<Guild, GuildMember, GuildMember>()
+	public evtGuildMemberUpdate = new Evt<{guild: Guild, member: GuildMember, oldMember: GuildMember}>();
 
 	//TODO: evtGuildMemberChunk: https://discord.com/developers/docs/topics/gateway#guild-members-chunk
 
 	/** Fired when a guild role is created. */
-	public evtGuildRoleCreate = new Evt<Guild, Role>()
+	public evtGuildRoleCreate = new Evt<{guild: Guild, role: Role}>();
 
 	/** Fired when a guild role is updated. */
-	public evtGuildRoleUpdate = new Evt<Guild, Role>()
+	public evtGuildRoleUpdate = new Evt<{guild: Guild, role: Role}>();
 
 	/** Fired when a guild role is deleted. */
-	public evtGuildRoleDelete = new Evt<Guild, Role>()
+	public evtGuildRoleDelete = new Evt<{guild: Guild, role: Role}>();
 
 	// TODO: Invites (see https://discord.com/developers/docs/topics/gateway#invites)
 
 	/** Fired when a message is created. */
-	public evtMessageCreate = new Evt<Message>()
+	public evtMessageCreate = new Evt<Message>();
 
 	/** Fired when a message is updated. */
-	public evtMessageUpdate = new Evt<Message>()
+	public evtMessageUpdate = new Evt<Message>();
 
-	/**
-	 * Fired when a message is deleted.
-	 * @property {string} messageID
-	 * @property {string} channelID
-	 */
-	public evtMessageDelete = new Evt<string, string>()
+	/** Fired when a message is deleted. */
+	public evtMessageDelete = new Evt<{messageID: string, channelID: string}>();
 
-	/**
-	 * Fired when messages are deleted in bulk.
-	 * @property {Array<string>} messageIDs
-	 * @property {string} channelID
-	 */
-	public evtMessageDeleteBulk = new Evt<Array<string>, string>()
+	/** Fired when messages are deleted in bulk. */
+	public evtMessageDeleteBulk = new Evt<{messageIDs: Array<string>, channelID: string}>();
 
-	/**
-	 * Fired when a reaction is added to a message.
-	 * @property {User} user
-	 * @property {Channel} channel
-	 * @property {ReactionStandardEmoji | ReactionCustomEmoji} emoji
-	 * @property {string} messageID
-	 */
-	public evtMessageReactionAdd = new Evt<User, Channel, ReactionStandardEmoji | ReactionCustomEmoji, string>()
+	/** Fired when a reaction is added to a message. */
+	public evtMessageReactionAdd = new Evt<{user: User, channel: Channel, emoji: ReactionStandardEmoji | ReactionCustomEmoji, messageID: string}>();
 
-	/**
-	 * Fired when a reaction is removed from a message.
-	 * @property {User} user
-	 * @property {Channel} channel
-	 * @property {ReactionStandardEmoji | ReactionCustomEmoji} emoji
-	 * @property {string} messageID
-	 */
-	public evtMessageReactionRemove = new Evt<User, Channel, ReactionStandardEmoji | ReactionCustomEmoji, string>()
+	/** Fired when a reaction is removed from a message. */
+	public evtMessageReactionRemove = new Evt<{user: User, channel: Channel, emoji: ReactionStandardEmoji | ReactionCustomEmoji, messageID: string}>();
 
-	/**
-	 * Fired when a user removes all reactions from a message.
-	 * @property {Channel} channel
-	 * @property {string} messageID
-	 */
-	public evtMessageReactionRemoveAll = new Evt<Channel, string>()
+	/** Fired when a user removes all reactions from a message. */
+	public evtMessageReactionRemoveAll = new Evt<{channel: Channel, messageID: string}>()
 
 	// TODO: Presence ...https://discord.com/developers/docs/topics/gateway#presence-update
 
-	/**
-	 * Fired when a user starts typing in a channel.
-	 * @property {Channel} channel
-	 * @property {string} userID - TODO: User object
-	 * @property {number} timestamp
-	 */
-	public evtTypingStart = new Evt<Channel, string, number>()
+	/** Fired when a user starts typing in a channel. */
+	public evtTypingStart = new Evt<{channel: Channel, userID: string, timestamp: number}>()
 
 	// TODO: Voice ...https://discord.com/developers/docs/topics/gateway#voice
 
