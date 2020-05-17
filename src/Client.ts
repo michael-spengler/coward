@@ -31,9 +31,7 @@ export class Client extends EventEmitter {
 	public channelGuildIDs: Map<string, string> = new Map<string, string>()
 
 	/** Create a Client */
-	public constructor(public token: string, public options: Options.clientConstructor = {
-		autoreconnect: true,
-	}) {
+	public constructor(public token: string, public options: Options.clientConstructor = {}) {
 		super()
 		this.gateway = new Gateway(token, this)
 		this.requestHandler = new RequestHandler(this)
@@ -368,8 +366,6 @@ export class Client extends EventEmitter {
 /** Namespace for functions */
 export namespace Options {
 	export interface clientConstructor {
-		autoreconnect: boolean,
-
 	}
 
 	export interface modifyPresence {
