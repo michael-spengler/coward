@@ -9,7 +9,6 @@ import { Versions, Discord, Endpoints } from "../../util/Constants.ts";
 import { fear } from "../../util/Fear.ts";
 
 import { Client } from "../../Client.ts";
-import { Guild, GuildMember, Message, User, Role, Channel } from "../../Classes.ts";
 import { handleEvent } from "./EventHandler.ts"
 
 export default class Gateway {
@@ -114,7 +113,6 @@ export default class Gateway {
 				}));
 				break;
 			case 7:
-			case 9:
 				this.attemptReconnect()
 				break
 			case 10:
@@ -131,9 +129,7 @@ export default class Gateway {
 				this.receivedAck = true
 				break
 		}
-
 		handleEvent(this.client, message)
-
 	}
 
 	private async close() {

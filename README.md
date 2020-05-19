@@ -18,9 +18,9 @@ Please don't use this in anything important yet. It is barely functional, and as
 ## Ping-Pong Example
 
 ```typescript
-import { Coward } from "https://deno.land/x/coward/mod.ts";
+import { Client } from "https://deno.land/x/coward/mod.ts";
 
-let client = new Coward("TOKEN")
+let client = new Client("TOKEN")
 
 client.evtReady.attach(() => {console.log("READY!")})
 

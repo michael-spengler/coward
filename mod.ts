@@ -1,4 +1,4 @@
-export { Client as Coward } from "./src/Client.ts";
+export { Client } from "./src/Client.ts";
 export { Options } from "./src/Client.ts";
 
 export { Channel } 					from "./src/classes/Channel.ts";
