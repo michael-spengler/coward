@@ -36,7 +36,7 @@ export class RequestHandler {
 			headers: headers,
 			body: body
 		});
-
+		
 		switch(response.status) {
 			case 400: case 401: case 403: case 404: case 405: case 429:
 			case 502: case 500: case 503: case 504: case 507: case 508:

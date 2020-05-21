@@ -5,11 +5,11 @@ import {
 
 	green, red, blue, bold, reset
 } from "../../../deps.ts";
-import { Versions, Discord, Endpoints } from "../../util/Constants.ts";
+import { Versions, Discord } from "../../util/Constants.ts";
 import { fear } from "../../util/Fear.ts";
 
 import { Client } from "../../Client.ts";
-import { handleEvent } from "./EventHandler.ts"
+import { handleEvent } from "./EventHandler.ts";
 
 export default class Gateway {
 	public sock!: WebSocket;
@@ -102,9 +102,12 @@ export default class Gateway {
 	}
 
 	private async handleWSMessage(message: any) {
+		if(message.s) {
+			this.sequence = message.s
+		}
 		switch (message.op) {
 			case 0:
-				this.sequence = message.s;
+				
 				break;
 			case 1:
 				this.sock.send(JSON.stringify({
@@ -113,7 +116,7 @@ export default class Gateway {
 				}));
 				break;
 			case 7:
-				this.attemptReconnect()
+				this.attemptReconnect() // Don't close the connection lol
 				break
 			case 10:
 				this.heartbeatInt = message.d.heartbeat_interval
@@ -133,14 +136,16 @@ export default class Gateway {
 	}
 
 	private async close() {
+		console.log("clolsing")
 		this.receivedAck = true
 		if (this.heartbeat) clearInterval(this.heartbeat)
-		this.heartbeatInt = 0
 		if (!this.sock.isClosed) this.sock.close(1000)
 	}
 
 	private async onClose(message: any) {
 		this.status = "disconnected"
+		this.close()
+		console.log(message.code)
 		if (message.code) {
 			switch (message.code) {
 				case 4000:
@@ -215,6 +220,5 @@ export default class Gateway {
 					break;
 			}
 		}
-		this.close()
 	}
 }

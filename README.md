@@ -11,7 +11,7 @@ Coward is a Deno module for easy interaction with the [Discord API](https://disc
 ## Usage
 
 ```typescript
-import { Coward } from "https://deno.land/x/coward/mod.ts";
+import { Client } from "https://deno.land/x/coward/mod.ts";
 ```
 Please don't use this in anything important yet. It is barely functional, and as such is not production ready.
 
@@ -20,14 +20,14 @@ Please don't use this in anything important yet. It is barely functional, and as
 ```typescript
 import { Client } from "https://deno.land/x/coward/mod.ts";
 
-let client = new Client("TOKEN")
+let client = new Client("TOKEN");
 
-client.evtReady.attach(() => {console.log("READY!")})
+client.evt.ready.attach(() => {console.log("READY!")});
 
-client.evtMessageCreate.attach(({message}) => {
-    if(message.content == "!ping") {
-        client.postMessage(message.channel.id, "Pong!")
-    }
+client.evt.messageCreate.attach(({message}) => {
+  if(message.content == "!ping") {
+    client.postMessage(message.channel.id, "Pong!");
+  }
 })
 
 client.connect()
