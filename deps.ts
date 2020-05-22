@@ -1,9 +1,15 @@
+// websocket stuff
 export {
   connectWebSocket,
   isWebSocketCloseEvent,
   WebSocket,
-} from "https://deno.land/std/ws/mod.ts"
+} from "https://deno.land/std@0.52.0/ws/mod.ts";
 
-export * from "https://deno.land/std/fmt/colors.ts"
+// deferred promises :)
+export * from "https://deno.land/std@0.52.0/async/deferred.ts";
 
-export { Evt } from "https://deno.land/x/evt/mod.ts"
+// colours
+export * from "https://deno.land/std@0.52.0/fmt/colors.ts";
+
+// Evt 
+export { Evt } from "https://deno.land/x/evt/mod.ts";

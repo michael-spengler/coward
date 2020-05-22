@@ -68,6 +68,7 @@ export default class Gateway {
 				d: this.sequence,
 			}));
 		} else {
+			console.log("Didn't receive heartbeat Ack!")
 			this.attemptReconnect()
 		}
 		this.receivedAck = false

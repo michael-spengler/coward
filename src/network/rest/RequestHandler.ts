@@ -1,8 +1,9 @@
 import { Client } from "../../Client.ts"
-import { Permissions, Versions, Discord, Endpoints } from "../../util/Constants.ts";
+import { Versions, Discord } from "../../util/Constants.ts";
 
 export class RequestHandler {
 	private _userAgent: string = `DiscordBot (https://github.com/fox-cat/coward), ${Versions.THIS}`;
+	private _queue: Array<any> = [];
 
 	constructor(private _client: Client) {};
 

@@ -1,7 +1,5 @@
 import { Client } from "../Client.ts"
 
-import { Guild } from "../Classes.ts"
-
 /** Class representing a Role */
 export class Role {
 	public id: string
