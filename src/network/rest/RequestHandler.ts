@@ -5,7 +5,6 @@ import { Bucket } from "./Bucket.ts";
 export class RequestHandler {
 	private userAgent: string = `DiscordBot (https://github.com/fox-cat/coward), ${Versions.THIS}`;
 	private rateLimitBuckets = new Map<string, Bucket>();
-	private attempts = 0;
 	public global = false;
 	public globalReset = 0;
 
@@ -25,11 +24,40 @@ export class RequestHandler {
         }
         
 		return route;
-    }
+	}
+	
+	public applyHeadersToBucket(bucket: Bucket, headers: Headers) {
+		if(headers.has("x-ratelimit-global")) {
+			bucket.ratelimiter.global = true;
+			bucket.ratelimiter.globalReset = +headers.get("retry-after")!;
+		}
 
-	public async request(method: string, url: string, data?: any): Promise<any> {
+		if(headers.has("x-ratelimit-limit")) {
+			bucket.limit = +headers.get("x-ratelimit-limit")!;	
+		}
+
+		if(headers.has("x-ratelimit-remaining")) {
+			bucket.remaining = +headers.get("x-ratelimit-remaining")!;
+		} else {
+			bucket.remaining = 1;
+		}
+
+		if(headers.has("x-ratelimit-reset")) {
+			bucket.reset = +headers.get("x-ratelimit-reset")!;
+		}
+	}
+
+	public addQueue(func: Function, method: string, url: string) {
 		const route = this.routify(method, url);
+		let bucket = this.rateLimitBuckets.get(route);
+		if(bucket == undefined) {
+			bucket = new Bucket(this);
+			this.rateLimitBuckets.set(route, bucket);
+		}
+		bucket.addQueue(func);
+	}
 
+	public async request(method: string, url: string, data?: any, attempts: number = 0): Promise<any> {
 		let headers: {[k: string]: any} = {
 			"User-Agent": this.userAgent,
 			"Authorization": "Bot " + this.client.token,
@@ -56,12 +84,7 @@ export class RequestHandler {
 		}
 
 		return new Promise(async (resolve, reject) => {
-			let bucket = this.rateLimitBuckets.get(route);
-			if(bucket == undefined) {
-				bucket = new Bucket(this);
-				this.rateLimitBuckets.set(route, bucket);
-			}
-			const req = async () => {
+			const req = async (bucket: Bucket) => {
 				try {
 					const response = await fetch(Discord.API + url, {
 						method: method,
@@ -69,40 +92,30 @@ export class RequestHandler {
 						body: body,
 					});
 	
-					if(response.status == 204) resolve();
+					if(response.status == 204) return resolve();
 					const data = await response.json();
 					
 					if(response.ok) {
-						// Apply headers 2 bucket
-						if(response.headers.has("x-ratelimit-global")) {
-							bucket!.ratelimiter.global = true;
-							bucket!.ratelimiter.globalReset = +response.headers.get("retry-after")!;
-						}
-	
-						if(response.headers.has("x-ratelimit-limit")) {
-							bucket!.limit = +response.headers.get("x-ratelimit-limit")!;	
-						}
-	
-						if(response.headers.has("x-ratelimit-remaining")) {
-							bucket!.remaining = +response.headers.get("x-ratelimit-remaining")!;
-						} else {
-							bucket!.remaining = 1;
-						}
-	
-						if(response.headers.has("x-ratelimit-reset")) {
-							bucket!.reset = +response.headers.get("x-ratelimit-reset")!;
-						}
+						this.applyHeadersToBucket(bucket, response.headers);
+						return resolve(data);				
 					} else {
+						if(attempts == 3) return reject("Failed after 3 attempts.")
+
 						if(response.status == 429) {
-							console.warn("Received a 429; this is an issue with coward.")
-							//TODO: deal with this stuff
+							console.warn("Received a 429; :(");
+							this.applyHeadersToBucket(bucket, response.headers);	
+							return this.request(method, url, data, attempts++);
+						}
+						
+						if(response.status == 502) {
+							return this.request(method, url, data, attempts++);
 						}
 					}
 				} catch(error) {
 					reject(error)
 				}
 			}
-			req();
+			this.addQueue(async(bucket: Bucket) => {req(bucket)}, method, url);
 		})
 		
 		/** switch(response.status) {
