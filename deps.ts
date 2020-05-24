@@ -12,4 +12,4 @@ export * from "https://deno.land/std@0.52.0/async/deferred.ts";
 export * from "https://deno.land/std@0.52.0/fmt/colors.ts";
 
 // Evt 
-export { Evt } from "https://deno.land/x/evt@1.7.4/mod.ts";
+export { Evt } from "https://deno.land/x/evt@1.7.5/mod.ts";

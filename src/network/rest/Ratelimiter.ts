@@ -1,4 +1,4 @@
-import { Bucket } from "./Bucket.ts";
+/*import { Bucket } from "./Bucket.ts";
 
 export class Ratelimiter {
     public global = false;
@@ -14,4 +14,4 @@ export class Ratelimiter {
         }
         bucket.addQueue(func)
     }
-}
+}*/
