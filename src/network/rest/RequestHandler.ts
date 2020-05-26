@@ -112,7 +112,7 @@ export class RequestHandler {
 						}
 					}
 				} catch(error) {
-					reject(error)
+					reject(error);
 				}
 			}
 			this.addQueue(async(bucket: Bucket) => {req(bucket)}, method, url);
