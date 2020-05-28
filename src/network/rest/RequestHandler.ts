@@ -29,7 +29,8 @@ export class RequestHandler {
 	public applyHeadersToBucket(bucket: Bucket, headers: Headers) {
 		if(headers.has("x-ratelimit-global")) {
 			bucket.ratelimiter.global = true;
-			bucket.ratelimiter.globalReset = +headers.get("retry-after")!;
+			let offset = Date.parse(headers.get("date")!) - Date.now();
+			bucket.ratelimiter.globalReset = (+headers.get("retry-after")! * 1000) - (Date.now() + offset);
 		}
 
 		if(headers.has("x-ratelimit-limit")) {
@@ -43,14 +44,15 @@ export class RequestHandler {
 		}
 
 		if(headers.has("x-ratelimit-reset")) {
-			bucket.reset = +headers.get("x-ratelimit-reset")!;
+			let offset = Date.parse(headers.get("date")!) - Date.now();
+			bucket.reset = (+headers.get("x-ratelimit-reset")! * 1000) - (Date.now() + offset);
 		}
 	}
 
 	public addQueue(func: Function, method: string, url: string) {
 		const route = this.routify(method, url);
 		let bucket = this.rateLimitBuckets.get(route);
-		if(bucket == undefined) {
+		if(!bucket) {
 			bucket = new Bucket(this);
 			this.rateLimitBuckets.set(route, bucket);
 		}

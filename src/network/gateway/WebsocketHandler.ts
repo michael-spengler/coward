@@ -3,7 +3,7 @@ import {
 	isWebSocketCloseEvent,
 	WebSocket,
 
-	green, red, blue, bold, reset
+	red
 } from "../../../deps.ts";
 import { Versions, Discord } from "../../util/Constants.ts";
 import { fear } from "../../util/Fear.ts";
@@ -137,7 +137,6 @@ export default class Gateway {
 	}
 
 	private async close() {
-		console.log("clolsing")
 		this.receivedAck = true
 		if (this.heartbeat) clearInterval(this.heartbeat)
 		if (!this.sock.isClosed) this.sock.close(1000)

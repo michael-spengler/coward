@@ -1,5 +1,7 @@
 import { RequestHandler } from "./RequestHandler.ts";
 
+const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 export class Bucket {
     private queue: Array<{func: Function, callback: Function}> = [];
     
@@ -19,24 +21,17 @@ export class Bucket {
         })
     }
 
-    public checkQueue(): void {
+    public async checkQueue() {
         if(this.ratelimiter.global) {
-            this.resetTimeout = setTimeout(() => { this.setRemaining() }, this.ratelimiter.globalReset);
-            return;
+            await pause(this.ratelimiter.globalReset);
+            this.remaining = this.limit;
         }
         if(this.remaining === 0) {
-            this.resetTimeout = setTimeout(() => { this.setRemaining() }, this.reset);
-            return;
+            await pause(this.reset);
+            this.remaining = this.limit;
         }
         if(this.queue.length > 0 && this.remaining !== 0) {
             this.queue.splice(0, 1)[0].callback();
-            return;
         }
-    }
-
-    private setRemaining() {
-        this.remaining = this.limit,
-        clearTimeout(this.resetTimeout),
-        this.checkQueue()
     }
 }
