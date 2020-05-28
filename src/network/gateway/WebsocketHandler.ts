@@ -3,21 +3,23 @@ import {
 	isWebSocketCloseEvent,
 	WebSocket,
 
-	green, red, blue, bold, reset
+	red
 } from "../../../deps.ts";
-import { Versions, Discord, Endpoints } from "../../util/Constants.ts";
+import { Versions, Discord } from "../../util/Constants.ts";
 import { fear } from "../../util/Fear.ts";
 
 import { Client } from "../../Client.ts";
-import { Guild, GuildMember, Message, User, Role, Channel } from "../../Classes.ts";
+import { handleEvent } from "./EventHandler.ts";
 
 export default class Gateway {
 	public sock!: WebSocket;
 
 	private sequence: any = null
 	private sessionID: string = ""
+	private heartbeatInt: number = 0
 	private receivedAck: boolean = true
 	private status: string = "connecting"
+
 	constructor(private token: string, private client: Client) {}
 
 	public async connect(): Promise<void> {
@@ -60,26 +62,19 @@ export default class Gateway {
 	}
 
 	private singleHeartbeat() {
-		this.sock.send(JSON.stringify({
-			op: 1,
-			d: this.sequence,
-		}));
+		if(this.receivedAck) {
+			this.sock.send(JSON.stringify({
+				op: 1,
+				d: this.sequence,
+			}));
+		} else {
+			console.log("Didn't receive heartbeat Ack!")
+			this.attemptReconnect()
+		}
 		this.receivedAck = false
 	}
 
-	private heartbeat(int: any) {
-		setInterval(() => {
-			try {
-				if(this.receivedAck) {
-					this.singleHeartbeat()
-				} else {
-					this.attemptReconnect()
-				}
-			} catch (err) {
-				fear("error", "something went wrong when trying to heartbeat: \n" + red(err.stack))
-			}
-		}, int);
-	}
+	private heartbeat: any;
 
 	private async identify() {
 		await this.sock.send(JSON.stringify({
@@ -108,9 +103,12 @@ export default class Gateway {
 	}
 
 	private async handleWSMessage(message: any) {
+		if(message.s) {
+			this.sequence = message.s
+		}
 		switch (message.op) {
 			case 0:
-				this.sequence = message.s;
+				
 				break;
 			case 1:
 				this.sock.send(JSON.stringify({
@@ -119,219 +117,35 @@ export default class Gateway {
 				}));
 				break;
 			case 7:
-			case 9:
-				this.attemptReconnect()
+				this.attemptReconnect() // Don't close the connection lol
 				break
 			case 10:
-				this.heartbeat(message.d.heartbeat_interval)
+				this.heartbeatInt = message.d.heartbeat_interval
+				this.heartbeat = setInterval(() => {
+					try {
+						this.singleHeartbeat()
+					} catch (err) {
+						fear("error", "something went wrong when trying to heartbeat \n" + red(err.stack))
+					}
+				}, this.heartbeatInt)
 				break;
 			case 11:
 				this.receivedAck = true
 				break
 		}
-
-		switch(message.t) {
-			case "READY": {
-				/**
-				 * Fired when the Client is ready
-				 * @event Client#ready
-				 */
-				this.status = "ready"
-				this.sessionID = message.d.session_id
-				this.client.emit("ready", null)
-				break
-			}
-			case "CHANNEL_CREATE":{
-				/**
-				 * Fired when a Channel is created.
-				 * @event Client#channelCreate
-				 */
-				this.client.emit("channelCreate", Channel.from(message.d, this.client));
-				break;
-			}
-			case "CHANNEL_UPDATE":{
-				/**
-				 * Fired when a Channel is updated.
-				 * @event Client#channelUpdate
-				 */
-				this.client.emit("channelUpdate", Channel.from(message.d, this.client));
-				break;
-			}
-			case "CHANNEL_DELETE":{
-				/**
-				 * Fired when a Channel is deleted.
-				 * @event Client#channelDelete
-				 */
-				this.client.emit("channelDelete", Channel.from(message.d, this.client));
-				break;
-			}
-			// TODO: CHANNEL_PINS_UPDATE
-			case "GUILD_CREATE": {
-				/**
-				 * Fired when
-				 *	- The client is initally connecting.
-				 *	- A guild becomes available to the client.
-				 *	- The client joins a guild.
-				 * @event Client#guildCreate
-				 */
-				let guild = new Guild(message.d, this.client);
-				this.client.guilds.set(guild.id, guild);
-				this.client.emit("guildCreate", guild);
-				break;
-			}
-			case "GUILD_DELETE":{
-				/**
-				 * Fired when
-				 *	- The client leaves or is removed from a guild.
-				 *	- A guild becomes unavailable.
-				 * @event Client#guildDelete
-				 */
-				let guild = new Guild(message.d, this.client);
-				this.client.guilds.delete(guild.id);
-				this.client.emit("guildDelete", new Guild(message.d, this.client));
-				break;
-			}
-			case "GUILD_BAN_ADD":{
-				/**
-				 * Fired when a user is banned from the guild.
-				 * @event Client#guildBanAdd
-				 */
-				this.client.emit("guildBanAdd", this.client.guilds.get(message.d.guild_id), new User(message.d.user, this.client));
-				break;
-			}
-			case "GUILD_BAN_REMOVE":{
-				/**
-				 * Fired when a user is unbanned from the guild.
-				 * @event Client#guildBanAdd
-				 */
-				this.client.emit("guildBanRemove", this.client.guilds.get(message.d.guild_id), new User(message.d.user, this.client));
-				break;
-			}
-			case "GUILD_EMOJIS_UPDATE":{
-				//TODO: GUILD_EMOJIS_UPDATE
-				break;}
-			case "GUILD_INTEGRATIONS_UPDATE":{
-				//TODO: GUILD_INTEGRATIONS_UPDATE
-				break;
-			}
-			case "GUILD_MEMBER_ADD":{
-				/**
-				 * Fired when a new user joins the guild.
-				 * @event Client#guildMemberAdd
-				 */
-				let guild = this.client.guilds.get(message.d.guild_id);
-				if(guild != undefined) {
-					let member = new GuildMember(message.d, this.client);
-					guild.members.set(member.user.id, member);
-					this.client.guilds.set(guild.id, guild);
-					this.client.emit("guildMemberAdd", guild, member);
-				}
-				break;
-			}
-			case "GUILD_MEMBER_REMOVE":{
-				/**
-				 * Fired when a user leaves or is removed from the guild.
-				 * @event Client#guildMemberRemove
-				 */
-				let guild = this.client.guilds.get(message.d.guild_id);
-				if(guild != undefined) {
-					let member = guild.members.get(message.d.user.id);
-					if(member != undefined) {
-						guild.members.delete(member.user.id);
-						this.client.guilds.set(guild.id, guild);
-						this.client.emit("guildMemberRemove", guild, member);
-					}
-				}
-				break;
-			}
-			case "GUILD_MEMBER_UPDATE":{
-				// TODO: https://discord.com/developers/docs/topics/gateway#guild-member-update
-				break;
-			}
-			case "GUILD_MEMBERS_CHUNK":{
-				// TODO: https://discord.com/developers/docs/topics/gateway#guild-members-chunk
-				break;
-			}
-			case "GUILD_ROLE_CREATE":{
-				/**
-				 * Fired when a role is created in a guild.
-				 * @event Client#guildRoleCreate
-				 */
-				this.client.emit("guildRoleCreate", message.d.guild_id, new Role(message.d.role, this.client));
-				break;
-			}
-			case "GUILD_ROLE_UPDATE":{
-				/**
-				 * Fired when a role is deleted in a guild.
-				 * @event Client#guildRoleUpdate
-				 */
-				this.client.emit("guildRoleUpdate", message.d.guild_id, new Role(message.d.role, this.client));
-				break;
-			}
-			case "GUILD_ROLE_DELETE":{
-				/**
-				 * Fired when a role is deleted in a guild.
-				 * @event Client#guildRoleDelete
-				 */
-				this.client.emit("guildRoleDelete", message.d.guild_id, message.d.role_id);
-				break;
-			}
-			case "INVITE_CREATE":{
-				//TODO: https://discord.com/developers/docs/topics/gateway#invite-create
-				break;
-			}
-			case "INVITE_DELETE":{
-				//TODO: https://discord.com/developers/docs/topics/gateway#invite-delete
-				break;
-			}
-			case "MESSAGE_CREATE":{
-				/**
-				 * Fired when a message is created
-				 * @event Client#messageCreate
-				 */
-				this.client.emit("messageCreate", new Message(message.d, this.client));
-				break;
-			}
-			case "MESSAGE_UPDATE":{
-				/**
-				 * Fired when a message is updated
-				 * @event Client#messageUpdate
-				 */
-				if(!message.d.author) break; // FIX: I'm not sure why, but sending a message with an embed attached triggers the messageUpdate event ...?
-				this.client.emit("messageUpdate", new Message(message.d, this.client));
-				break;
-			}
-			case "MESSAGE_DELETE":{
-				/**
-				 * Fired when a message is deleted
-				 * @event Client#messageDelete
-				 */
-				this.client.emit("messageDelete", message.d.id, message.d.channel_id); //TODO
-				break;
-			}
-			case "MESSAGE_DELETE_BULK":{
-				/**
-				 * Fired when mesages are deleted in bulk.
-				 * @event Client#messageDeleteBulk
-				 */
-				this.client.emit("messageDeleteBulk", message.d.ids, message.d.channel_id);
-				break;
-			}
-			case "MESSAGE_REACTION_ADD":{
-				//TODO: https://discord.com/developers/docs/topics/gateway#message-reaction-add (and all other reactions)
-				break;
-			}
-			//TODO: All other ones lol
-		}
+		handleEvent(this.client, message)
 	}
 
 	private async close() {
 		this.receivedAck = true
+		if (this.heartbeat) clearInterval(this.heartbeat)
 		if (!this.sock.isClosed) this.sock.close(1000)
 	}
 
 	private async onClose(message: any) {
 		this.status = "disconnected"
+		this.close()
+		console.log(message.code)
 		if (message.code) {
 			switch (message.code) {
 				case 4000:
@@ -406,6 +220,5 @@ export default class Gateway {
 					break;
 			}
 		}
-		this.close()
 	}
 }

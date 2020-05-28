@@ -43,9 +43,7 @@ export class Channel {
 			case 6:
 				return new GuildStoreChannel(data, client);
 				break;
-			default:
-				return new Channel(data, client);
-				break;
 		}
+		return new Channel(data, client);
 	}
 }

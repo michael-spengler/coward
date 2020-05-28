@@ -4,10 +4,10 @@ import { User } from "./User.ts";
 /** Class representing a guild member */
 export class GuildMember {
 	public user: User;
-	public nick: string;
+	public nick!: string;
 	public roles: Array<string>; // TODO(fox-cat): role objects
 	public joinedAt: string;
-	public premiumSince: string;
+	public premiumSince!: string;
 	public deaf: boolean;
 	public mute: boolean;
 

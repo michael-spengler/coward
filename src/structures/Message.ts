@@ -3,11 +3,7 @@ import {
 	User,
 	GuildTextChannel,
 	DMChannel,
-	GuildVoiceChannel,
-	GuildChannelCategory,
 	GuildNewsChannel,
-	GuildStoreChannel,
-	GuildMember
 } from "../Classes.ts";
 
 /** Class representing a message */

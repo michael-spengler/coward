@@ -1,10 +1,17 @@
-import { EventEmitter, red, bold } from "../deps.ts"
+import { Endpoints } from "./util/Constants.ts"
 
-import { Permissions, Versions, Discord, Endpoints } from "./util/Constants.ts"
-import { permToArray } from "./util/Permission.ts";
-import { fear } from "./util/Fear.ts"
+import {
+	Channel,
+	Guild,
+	GuildMember,
+	DMChannel,
+	Message,
+	User,
+	Role,
+	Invite
+} from "./Classes.ts"
 
-import { Channel, Guild, GuildMember, DMChannel, Message, User, Role, Invite } from "./Classes.ts"
+import * as evt from "./Events.ts";
 import { RequestHandler } from "./network/rest/RequestHandler.ts"
 import Gateway from "./network/gateway/WebsocketHandler.ts"
 
@@ -21,7 +28,7 @@ import Gateway from "./network/gateway/WebsocketHandler.ts"
  *
  *            client.connect()
  */
-export class Client extends EventEmitter {
+export class Client {
 	private gateway: Gateway
 	private requestHandler: RequestHandler
 
@@ -32,10 +39,11 @@ export class Client extends EventEmitter {
 
 	/** Create a Client */
 	public constructor(public token: string, public options: Options.clientConstructor = {}) {
-		super()
 		this.gateway = new Gateway(token, this)
 		this.requestHandler = new RequestHandler(this)
 	}
+
+	public evt = evt;
 
 	/** Connect to the Discord API */
 	connect() {

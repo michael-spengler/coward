@@ -1,6 +1,5 @@
 import { Client } from "../Client.ts";
 import {
-	Message,
 	Channel,
 	Guild,
 	GuildTextChannel,
