@@ -8,7 +8,6 @@ export class Bucket {
     public limit: number = 5;
     public remaining: number = 1;
     public reset: number = 5000;
-    public resetTimeout: any = null;
 
     constructor(public ratelimiter: RequestHandler) {}
 

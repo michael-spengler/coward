@@ -25,9 +25,9 @@ let client = new Client("TOKEN");
 
 client.evt.ready.attach(() => {console.log("READY!")});
 
-client.evt.messageCreate.attach(({message}) => {
+client.evt.messageCreate.attach(async ({message}) => {
   if(message.content == "!ping") {
-    client.postMessage(message.channel.id, "Pong!");
+    await client.postMessage(message.channel.id, "Pong!");
   }
 })
 
