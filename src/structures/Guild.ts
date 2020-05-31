@@ -29,7 +29,7 @@ export class Guild {
 	/** A map of guild roles */
 	public roles: Map<string, Role> = new Map<string, Role>()
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		this.id = data.id
 		this.name = data.name
 		this.ownerID = data.ownerID

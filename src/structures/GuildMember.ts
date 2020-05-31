@@ -11,7 +11,7 @@ export class GuildMember {
 	public deaf: boolean;
 	public mute: boolean;
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		this.user = new User(data.user, client);
 		this.nick = data.nick || null;
 		this.roles = data.roles;

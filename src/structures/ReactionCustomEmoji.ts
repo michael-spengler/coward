@@ -8,7 +8,7 @@ import { ReactionStandardEmoji } from "../Classes.ts";
 export class ReactionCustomEmoji extends ReactionStandardEmoji {
 	public animateable: boolean;
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		super(data, client);
 		this.animateable = data.animateable || false;
 	}

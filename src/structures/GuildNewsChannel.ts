@@ -8,21 +8,19 @@ import { GuildChannel } from "./GuildChannel.ts"
 export class GuildNewsChannel extends GuildChannel {
 	public topic: string
 	public lastMessageID: string // TODO(fox-cat): contemplate message object here?
-	protected _client: Client
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		super(data, client)
 
-		this._client = client
 		this.topic = data.topic || null
 		this.lastMessageID = data.last_message_id || null
 	}
 
 	send(content: string) {
-		this._client.postMessage(this.id, content)
+		this.client.postMessage(this.id, content)
 	}
 
 	delete() {
-		this._client.deleteChannel(this.id)
+		this.client.deleteChannel(this.id)
 	}
 }

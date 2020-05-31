@@ -10,6 +10,7 @@ Coward is a Deno module for easy interaction with the [Discord API](https://disc
 
 ## Usage
 
+You must be using [Deno v1.0.2](https://github.com/denoland/deno/releases/tag/v1.0.2) or higher.
 ```typescript
 import { Client } from "https://deno.land/x/coward@v0.2.0/mod.ts";
 ```

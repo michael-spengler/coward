@@ -21,7 +21,7 @@ export class GuildChannel extends Channel {
 	//public permission_overwrites: Array<>; // TODO(fox-cat): this whole thing
 	protected _guildID: any;
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		super(data, client);
 
 		this.name = data.name;
@@ -33,7 +33,7 @@ export class GuildChannel extends Channel {
 	}
 
 	get guild(): Guild | undefined {
-		return this._client.guilds.get(this._guildID);
+		return this.client.guilds.get(this._guildID);
 	}
 
 	static from(data: any, client: Client) {

@@ -9,7 +9,7 @@ export class GuildVoiceChannel extends GuildChannel {
 	public bitrate: number;
 	public userLimit: number;
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		super(data, client);
 
 		this.bitrate = data.bitrate;
