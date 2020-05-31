@@ -29,9 +29,9 @@ import Gateway from "./network/gateway/WebsocketHandler.ts"
  *            client.connect()
  */
 export class Client {
-	private gateway: Gateway
 	private requestHandler: RequestHandler
 
+	public gateway: Gateway
 	public guilds: Map<string, Guild> = new Map<string, Guild>()
 	public users: Map<string, User> = new Map<string, User>()
 	public dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>()
