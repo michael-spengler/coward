@@ -29,7 +29,6 @@ export default class Gateway {
 			this.sock = await connectWebSocket(`${Discord.GATEWAY}/v=${Versions.GATEWAY}`);
 
 			if(this.status === "resuming") {
-				this.status = "handshaking"
 				await this.sock.send(JSON.stringify({
 					op: 6,
 					d: {
@@ -38,6 +37,7 @@ export default class Gateway {
 						seq: this.sequence
 					}
 				}))
+				this.status = "handshaking"
 			} else {
 				this.status = "handshaking"
 				await this.singleHeartbeat()
