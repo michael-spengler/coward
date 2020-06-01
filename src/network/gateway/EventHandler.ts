@@ -8,25 +8,27 @@ export function handleEvent(client: Client, message: any) {
 			break
 		}
 		case "CHANNEL_CREATE": {
-			const channel = Channel.from(message.d, client);
+			const channel = Channel.from(message.d, client)
 			if(channel instanceof DMChannel) {
-				client.dmChannels.set(channel.id, channel);
+				client.dmChannels.set(channel.id, channel)
+				client.dmChannelUsers.set(channel.recipients[0].id, channel.id)
 			}
 			client.evt.channelCreate.post({channel: channel})
 			break
 		}
 		case "CHANNEL_UPDATE": {
-			const channel = Channel.from(message.d, client);
+			const channel = Channel.from(message.d, client)
 			if(channel instanceof DMChannel) {
-				client.dmChannels.set(channel.id, channel);
+				client.dmChannels.set(channel.id, channel)
 			}
 			client.evt.channelUpdate.post({channel: channel})
 			break
 		}
 		case "CHANNEL_DELETE": {
-			const channel = Channel.from(message.d, client);
+			const channel = Channel.from(message.d, client)
 			if(channel instanceof DMChannel) {
-				client.dmChannels.delete(channel.id);
+				client.dmChannels.delete(channel.id)
+				client.dmChannelUsers.delete(channel.recipients[0].id)
 			}
 			client.evt.channelDelete.post({channel: channel})
 			break
