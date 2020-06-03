@@ -8,7 +8,7 @@ import { GuildChannel } from "./GuildChannel.ts";
  * @extends GuildChannel
  */
 export class GuildChannelCategory extends GuildChannel {
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		super(data, client);
 	}
 }

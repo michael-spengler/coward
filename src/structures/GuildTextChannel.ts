@@ -10,17 +10,15 @@ export class GuildTextChannel extends GuildChannel {
 	public rateLimitPerUser: number;
 	public topic: string;
 	public lastMessageID: string;
-	protected _client: Client;
 
 
 	public messages: Map<string, Message> = new Map<string, Message>();
 	// TODO: deal with messages. possible message limit from client options?
 	// contemplate. ^_^
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		super(data, client);
 
-		this._client = client
 		this.rateLimitPerUser = data.rate_limit_per_user
 		this.topic = data.topic || null
 		this.lastMessageID = data.last_message_id || null
@@ -28,11 +26,11 @@ export class GuildTextChannel extends GuildChannel {
 
 
 	send(content: string) {
-		return this._client.postMessage(this.id, content)
+		return this.client.postMessage(this.id, content)
 	}
 
 	delete() {
-		return this._client.deleteChannel(this.id)
+		return this.client.deleteChannel(this.id)
 	}
 
 

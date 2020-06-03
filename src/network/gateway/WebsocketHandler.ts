@@ -13,6 +13,8 @@ import { handleEvent } from "./EventHandler.ts";
 
 export default class Gateway {
 	public sock!: WebSocket;
+	public lastPingTimestamp: number = 0;
+	public ping: number = 0;
 
 	private sequence: any = null
 	private sessionID: string = ""
@@ -27,7 +29,6 @@ export default class Gateway {
 			this.sock = await connectWebSocket(`${Discord.GATEWAY}/v=${Versions.GATEWAY}`);
 
 			if(this.status === "resuming") {
-				this.status = "handshaking"
 				await this.sock.send(JSON.stringify({
 					op: 6,
 					d: {
@@ -36,6 +37,7 @@ export default class Gateway {
 						seq: this.sequence
 					}
 				}))
+				this.status = "handshaking"
 			} else {
 				this.status = "handshaking"
 				await this.singleHeartbeat()
@@ -72,6 +74,7 @@ export default class Gateway {
 			this.attemptReconnect()
 		}
 		this.receivedAck = false
+		this.lastPingTimestamp = Date.now()
 	}
 
 	private heartbeat: any;
@@ -131,6 +134,7 @@ export default class Gateway {
 				break;
 			case 11:
 				this.receivedAck = true
+				this.ping = Date.now() - this.lastPingTimestamp
 				break
 		}
 		handleEvent(this.client, message)

@@ -1,5 +1,5 @@
 import { Client } from "../../Client.ts"
-import { Guild, GuildMember, GuildEmoji, Message, User, Role, Channel } from "../../Classes.ts";
+import { Guild, GuildMember, GuildEmoji, DMChannel, Message, User, Role, Channel } from "../../Classes.ts";
 
 export function handleEvent(client: Client, message: any) {
 	switch(message.t) {
@@ -8,15 +8,29 @@ export function handleEvent(client: Client, message: any) {
 			break
 		}
 		case "CHANNEL_CREATE": {
-			client.evt.channelCreate.post({channel: Channel.from(message.d, client)})
+			const channel = Channel.from(message.d, client)
+			if(channel instanceof DMChannel) {
+				client.dmChannels.set(channel.id, channel)
+				client.dmChannelUsers.set(channel.recipients[0].id, channel.id)
+			}
+			client.evt.channelCreate.post({channel: channel})
 			break
 		}
 		case "CHANNEL_UPDATE": {
-			client.evt.channelUpdate.post({channel: Channel.from(message.d, client)})
+			const channel = Channel.from(message.d, client)
+			if(channel instanceof DMChannel) {
+				client.dmChannels.set(channel.id, channel)
+			}
+			client.evt.channelUpdate.post({channel: channel})
 			break
 		}
 		case "CHANNEL_DELETE": {
-			client.evt.channelDelete.post({channel: Channel.from(message.d, client)})
+			const channel = Channel.from(message.d, client)
+			if(channel instanceof DMChannel) {
+				client.dmChannels.delete(channel.id)
+				client.dmChannelUsers.delete(channel.recipients[0].id)
+			}
+			client.evt.channelDelete.post({channel: channel})
 			break
 		}
 		case "CHANNEL_PINS_UPDATE": {

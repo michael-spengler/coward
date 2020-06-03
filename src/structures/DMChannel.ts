@@ -7,9 +7,8 @@ import { User, Channel } from "../Classes.ts"
 export class DMChannel extends Channel {
 	public recipients: Array<User>
 	public lastMessageID: string // TODO(fox-cat): contemplate message object here?
-	protected _client: Client
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		super(data, client)
 
 		// reading over this again. was going to do something in here but
@@ -20,13 +19,12 @@ export class DMChannel extends Channel {
 		for (let i in data.recipients) {
 			arr[<any>i] = new User(data.recipients[i], client)
 		}
-		this._client = client
 		this.recipients = arr
 		this.lastMessageID = data.last_message_id
 	}
 
 	send(content: string) {
-		this._client.postMessage(this.id, content)
+		this.client.postMessage(this.id, content)
 	}
 
 }

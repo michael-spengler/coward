@@ -15,7 +15,7 @@ export class GuildEmoji {
 	/** Whether the emoji is available - may be false due to loss of server boosts. */
 	public available: boolean;
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		this.id = data.id;
 		this.name = data.name;
 		if(data.roles) {

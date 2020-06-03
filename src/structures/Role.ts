@@ -9,7 +9,7 @@ export class Role {
 	public managed: boolean
 	public mentionable: boolean
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		this.id = data.id
 		this.name = data.name
 		this.color = data.color

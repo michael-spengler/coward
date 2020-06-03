@@ -29,12 +29,13 @@ import Gateway from "./network/gateway/WebsocketHandler.ts"
  *            client.connect()
  */
 export class Client {
-	private gateway: Gateway
 	private requestHandler: RequestHandler
 
+	public gateway: Gateway
 	public guilds: Map<string, Guild> = new Map<string, Guild>()
 	public users: Map<string, User> = new Map<string, User>()
 	public dmChannels: Map<string, DMChannel> = new Map<string, DMChannel>()
+	public dmChannelUsers: Map<string, string> = new Map<string, string>()
 	public channelGuildIDs: Map<string, string> = new Map<string, string>()
 
 	/** Create a Client */
@@ -88,6 +89,22 @@ export class Client {
 		channelID: string
 	): Promise<void> {
 		return this.requestHandler.request( "DELETE", Endpoints.CHANNEL(channelID) )
+	}
+
+	/** Get a DM channel of a user - if there is none, create one. */
+	getDMChannel(
+		userID: string
+	): Promise<DMChannel> {
+		return new Promise(async (resolve, reject) => {
+			let dmChannelID = this.dmChannelUsers.get(userID);
+			if(dmChannelID !== undefined) {
+				resolve(this.dmChannels.get(dmChannelID))
+			} else {
+				this.requestHandler.request( "POST", Endpoints.USER_CHANNELS("@me"), {recipients: [userID], type: 1})
+					.then((data: any) => { resolve(new DMChannel(data, this)) })
+					.catch((err: any) => { reject(err) })
+			}
+		})
 	}
 
 	/** Post a message in a channel. Requires the `SEND_MESSAGES` permission.*/

@@ -14,7 +14,7 @@ export class Message {
 	public author: User;
 	public timestamp: string;
 
-	constructor(data: any, client: Client) {
+	constructor(data: any, protected client: Client) {
 		this.id = data.id;
 		this.content = data.content;
 		var channel: any;
