@@ -13,3 +13,5 @@ export * from "https://deno.land/std@0.52.0/fmt/colors.ts";
 
 // Evt 
 export { Evt } from "https://deno.land/x/evt@1.7.12/mod.ts";
+
+export { use } from "https://raw.githubusercontent.com/michaelolof/typescript-mix/master/src/index.ts";
