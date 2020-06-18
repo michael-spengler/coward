@@ -1,15 +1,13 @@
 import { Endpoints } from "./util/Constants.ts"
 
-import {
-	Channel,
-	Guild,
-	GuildMember,
-	DMChannel,
-	Message,
-	User,
-	Role,
-	Invite
-} from "./Classes.ts"
+import { Channel } from "./structures/Channel.ts"
+import { Guild } from "./structures/Guild.ts"
+import { GuildMember } from "./structures/GuildMember.ts"
+import { DMChannel } from "./structures/DMChannel.ts"
+import { Message } from "./structures/Message.ts"
+import { User } from "./structures/User.ts"
+import { Role } from "./structures/Role.ts"
+import { Invite } from "./structures/Invite.ts"
 
 import * as evt from "./Events.ts";
 import { RequestHandler } from "./network/rest/RequestHandler.ts"
@@ -51,18 +49,12 @@ export class Client {
 		this.gateway.connect()
 	}
 
-	modifyPresence(
-		options: Options.modifyPresence = { status: "online" }
-	): Promise<void> {
+	modifyPresence(options: Options.modifyPresence = { status: "online" }): Promise<void> {
 		return this.gateway.modifyPresence(options)
 	}
 
 	/** Post a channel in a guild. Requires the `MANAGE_CHANNELS` permission. */
-	postChannel(
-		/** Guild to create the channel in */
-		guildID: string,
-		options: Options.postChannel
-	): Promise<Channel> {
+	createChannel(guildID: string, options: Options.createChannel): Promise<Channel> {
 		return new Promise(async (resolve, reject) => {
 			this.requestHandler.request( "POST", Endpoints.GUILD_CHANNELS(guildID), options )
 				.then((data: any) => { resolve(Channel.from(data, this)) })
@@ -71,11 +63,7 @@ export class Client {
 	}
 
 	/** Modify a channel. Requires the `MANAGE_CHANNELS` permission in the guild. */
-	modifyChannel(
-		/** Channel to modify */
-		channelID: string,
-		options: Options.modifyChannel
-	): Promise<Channel> {
+	modifyChannel(channelID: string, options: Options.modifyChannel): Promise<Channel> {
 		return new Promise(async (resolve, reject) => {
 			this.requestHandler.request( "PATCH", Endpoints.CHANNEL(channelID), options )
 				.then((data: any) => { resolve(Channel.from(data, this)) })
@@ -84,10 +72,7 @@ export class Client {
 	}
 
 	/** Delete a channel. Requires the `MANAGE_CHANNELS` permission in the guild. */
-	deleteChannel(
-		/** Channel to delete */
-		channelID: string
-	): Promise<void> {
+	deleteChannel(channelID: string): Promise<void> {
 		return this.requestHandler.request( "DELETE", Endpoints.CHANNEL(channelID) )
 	}
 
@@ -196,10 +181,7 @@ export class Client {
 	// TODO: createChannelInvite ?
 
 	/** Get invites in a guild channel. Returns an array of Invite objects. Requires `MANAGE_CHANNELS` permission. */
-	getChannelInvites(
-		/** Channel to get the invites of */
-		channelID: string
-	): Promise<Array<Invite>> {
+	getChannelInvites(channelID: string): Promise<Array<Invite>> {
 		return new Promise(async (resolve, reject) => {
 			this.requestHandler.request( "GET", Endpoints.CHANNEL_INVITES(channelID))
 				.then((data: any) => {
@@ -217,10 +199,7 @@ export class Client {
 	 * Post a typing indicator for a specified channel.
 	 * Bots should usually not use this, however if a bot is responding to a command and expects the computation to take a few seconds, this may be used to let the user know that the bot is processing their message.
 	 */
-	postTypingIndicator(
-		/** Channel to post a typing indicator in */
-		channelID: string
-	): Promise<void> {
+	postTypingIndicator(channelID: string): Promise<void> {
 		return this.requestHandler.request( "POST", Endpoints.CHANNEL_TYPING(channelID) )
 	}
 
@@ -333,7 +312,7 @@ export class Client {
 	}
 
 	/** Create a role in a guild. Requires `MANAGE_ROLES` permission. */
-	createRole(guildID: string, options: Options.postRole): Promise<Role> {
+	createRole(guildID: string, options: Options.createRole): Promise<Role> {
 		return new Promise(async (resolve, reject) => {
 			this.requestHandler.request( "POST", Endpoints.GUILD_ROLES(guildID), options )
 				.then((data: any) => {
@@ -369,12 +348,7 @@ export class Client {
 	}
 
 	/** Delete a role in a guild. Requires `MANAGE_ROLES` permission. */
-	deleteRole(
-		/** Guild to delete the role in */
-		guildID: string,
-		/** Role to delete */
-		roleID: string
-	): Promise<void> {
+	deleteRole(guildID: string, roleID: string): Promise<void> {
 		return this.requestHandler.request( "DELETE", Endpoints.GUILD_ROLE(guildID, roleID) )
 	}
 
@@ -395,7 +369,7 @@ export namespace Options {
 		}
 	}
 
-	export interface postChannel {
+	export interface createChannel {
 		name: string,
 		type: number,
 		position?: number,
@@ -470,7 +444,7 @@ export namespace Options {
 		reason?: string
 	}
 
-	export interface postRole {
+	export interface createRole {
 		name?: string,
 		//permissions?: number,
 		color?: number,

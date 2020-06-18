@@ -11,7 +11,7 @@ export interface GuildTextChannel extends GuildChannel, TextChannel {}
  * @extends GuildChannel
  */
 export class GuildTextChannel extends GuildChannel {
-	@use( TextChannel ) this: any
+	@use( TextChannel ) this: any // TODO: stop using decorators as they are currently expiremental...
 
 	public rateLimitPerUser: number;
 	public topic: string;

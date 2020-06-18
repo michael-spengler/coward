@@ -1,13 +1,11 @@
-import { Client, Options } from "../Client.ts";
-import {
-	Channel,
-	Guild,
-	GuildTextChannel,
-	GuildVoiceChannel,
-	GuildChannelCategory,
-	GuildNewsChannel,
-	GuildStoreChannel
-} from "../Classes.ts";
+import { Client, Options } from "../Client.ts"
+import { Channel } from "./Channel.ts"
+import { Guild } from "./Guild.ts"
+import { GuildTextChannel } from "./GuildTextChannel.ts";
+import { GuildVoiceChannel } from "./GuildVoiceChannel.ts";
+import { GuildChannelCategory } from "./GuildChannelCategory.ts";
+import { GuildNewsChannel } from "./GuildNewsChannel.ts";
+import { GuildStoreChannel } from "./GuildStoreChannel.ts";
 
 /**
  * Class representing a channel in a guild
