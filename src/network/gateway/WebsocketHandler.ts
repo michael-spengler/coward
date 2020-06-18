@@ -29,6 +29,7 @@ export default class Gateway {
 			this.sock = await connectWebSocket(`${Discord.GATEWAY}/v=${Versions.GATEWAY}`);
 
 			if(this.status === "resuming") {
+				this.status = "handshaking"
 				await this.sock.send(JSON.stringify({
 					op: 6,
 					d: {
@@ -37,7 +38,6 @@ export default class Gateway {
 						seq: this.sequence
 					}
 				}))
-				this.status = "handshaking"
 			} else {
 				this.status = "handshaking"
 				await this.singleHeartbeat()
@@ -45,11 +45,11 @@ export default class Gateway {
 			}
 
 			for await (const msg of this.sock) {
-				if (typeof msg === "string") {
-					this.handleWSMessage(JSON.parse(msg));
-				} else if (isWebSocketCloseEvent(msg)) {
+				if (isWebSocketCloseEvent(msg)) {
 					fear("error", "websocket was closed");
 					this.onClose(msg);
+				} else if (typeof msg === "string") {
+					this.handleWSMessage(JSON.parse(msg));
 				}
 			}
 		} catch (err) {
@@ -109,16 +109,14 @@ export default class Gateway {
 		if(message.s) {
 			this.sequence = message.s
 		}
+
 		switch (message.op) {
-			case 0:
-				
-				break;
-			case 1:
+			/** case 1:
 				this.sock.send(JSON.stringify({
 					op: 1,
 					d: this.sequence,
 				}));
-				break;
+				break; **/
 			case 7:
 				this.attemptReconnect() // Don't close the connection lol
 				break
@@ -137,6 +135,7 @@ export default class Gateway {
 				this.ping = Date.now() - this.lastPingTimestamp
 				break
 		}
+
 		handleEvent(this.client, message)
 	}
 
@@ -152,11 +151,12 @@ export default class Gateway {
 		console.log(message.code)
 		if (message.code) {
 			switch (message.code) {
-				case 4000:
-					fear("error",
-						"Unkown Error: We're not sure what went wrong. Try reconnecting?",
-					);
-					break;
+				case 4000: // unknown error
+				case 4007: // invalid seq
+				case 4008: // ratelimited ?
+				case 4009: // session timed out
+					this.status = "reconnecting"
+					this.connect()
 				case 4001:
 					fear("error",
 						"Unknown Opcode: You sent an invalid Gateway opcode or an invalid payload for an opcode. Don't do that!",
@@ -180,21 +180,6 @@ export default class Gateway {
 				case 4005:
 					fear("error",
 						"Already Authenticated: You sent more than one identify payload. Don't do that!",
-					);
-					break;
-				case 4007:
-					fear("error",
-						"Invalid `seq`: The sequence sent when resuming the session was invalid. Reconnect and start a new session.",
-					);
-					break;
-				case 4008:
-					fear("error",
-						"Rate Limited: Woah nelly! You're sending payloads to us too quickly. Slow it down! You will be disconnected on receiving this.",
-					);
-					break;
-				case 4009:
-					fear("error",
-						"Session Timed Out: Your session timed out. Reconnect and start a new one.",
 					);
 					break;
 				case 4010:
