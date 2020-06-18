@@ -28,7 +28,7 @@ client.evt.ready.attach(() => {console.log("READY!")});
 
 client.evt.messageCreate.attach(async ({message}) => {
   if(message.content == "!ping") {
-    await client.postMessage(message.channel.id, "Pong!");
+    await client.createMessage(message.channel.id, "Pong!");
   }
 })
 

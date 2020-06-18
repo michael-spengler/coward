@@ -6,8 +6,8 @@ import { Options } from "../Client.ts";
  * @extends Channel
  */
 export class TextChannel extends Channel {
-    postMessage(content: string | Options.postMessage) {
-        return this.client.postMessage(this.id, content)
+    createMessage(content: string | Options.createMessage) {
+        return this.client.createMessage(this.id, content)
     }
 
     modifyMessage(messageID: string, content: string | Options.modifyMessage) {

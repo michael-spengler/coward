@@ -1,4 +1,4 @@
-import { Client, Options } from "../Client.ts"
+import { Client } from "../Client.ts"
 import { Message } from "./Message.ts"
 import { GuildChannel } from "./GuildChannel.ts"
 import { TextChannel } from "./TextChannel.ts";
@@ -25,9 +25,5 @@ export class GuildTextChannel extends GuildChannel {
 
 		this.rateLimitPerUser = data.rate_limit_per_user
 		this.topic = data.topic || null
-	}
-	
-	delete() {
-		return this.client.deleteChannel(this.id)
 	}
 }

@@ -1,4 +1,5 @@
 import { Client } from "../Client.ts"
+import { Guild } from "./Guild.ts"
 
 /** Class representing a Role */
 export class Role {
@@ -9,7 +10,7 @@ export class Role {
 	public managed: boolean
 	public mentionable: boolean
 
-	constructor(data: any, protected client: Client) {
+	constructor(data: any, public guild: Guild, protected client: Client) {
 		this.id = data.id
 		this.name = data.name
 		this.color = data.color

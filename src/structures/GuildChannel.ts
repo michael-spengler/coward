@@ -1,4 +1,4 @@
-import { Client } from "../Client.ts";
+import { Client, Options } from "../Client.ts";
 import {
 	Channel,
 	Guild,
@@ -33,9 +33,17 @@ export class GuildChannel extends Channel {
 	}
 
 	get guild(): Guild | undefined {
-		return this.client.guilds.get(this._guildID);
+		return this.client.guilds.get(this._guildID)
 	}
 
+	delete() {
+		return this.client.deleteChannel(this.id)
+	}
+
+	modify(options: Options.modifyChannel) {
+		return this.client.modifyChannel(this.id, options)
+	}
+ 
 	static from(data: any, client: Client) {
 		switch(data.type) {
 			case 0:
