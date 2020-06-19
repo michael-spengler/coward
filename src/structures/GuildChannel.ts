@@ -1,11 +1,6 @@
 import { Client, Options } from "../Client.ts"
 import { Channel } from "./Channel.ts"
 import { Guild } from "./Guild.ts"
-import { GuildTextChannel } from "./GuildTextChannel.ts";
-import { GuildVoiceChannel } from "./GuildVoiceChannel.ts";
-import { GuildChannelCategory } from "./GuildChannelCategory.ts";
-import { GuildNewsChannel } from "./GuildNewsChannel.ts";
-import { GuildStoreChannel } from "./GuildStoreChannel.ts";
 
 /**
  * Class representing a channel in a guild
@@ -40,28 +35,5 @@ export class GuildChannel extends Channel {
 
 	modify(options: Options.modifyChannel) {
 		return this.client.modifyChannel(this.id, options)
-	}
- 
-	static from(data: any, client: Client) {
-		switch(data.type) {
-			case 0:
-				return new GuildTextChannel(data, client);
-				break;
-			case 2:
-				return new GuildVoiceChannel(data, client);
-				break;
-			case 4:
-				return new GuildChannelCategory(data, client);
-				break;
-			case 5:
-				return new GuildNewsChannel(data, client);
-				break;
-			case 6:
-				return new GuildStoreChannel(data, client);
-				break;
-			default:
-				return new GuildChannel(data, client);
-				break;
-		}
 	}
 }

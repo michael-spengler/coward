@@ -1,11 +1,15 @@
 import { Client } from "../Client.ts";
 
-import { GuildTextChannel } from "./GuildTextChannel.ts"
-import { DMChannel } from "./DMChannel.ts"
-import { GuildVoiceChannel } from "./GuildVoiceChannel.ts"
-import { GuildChannelCategory } from "./GuildChannelCategory.ts"
-import { GuildNewsChannel } from "./GuildNewsChannel.ts"
-import { GuildStoreChannel } from "./GuildStoreChannel.ts"
+import { 
+	GuildTextChannel,
+	DMChannel,
+	GuildVoiceChannel,
+	GuildChannelCategory,
+	GuildNewsChannel,
+	GuildStoreChannel
+} from "../../mod.ts" 
+// This doesn't work unless I import them all from here.
+// I'm not sure why.
 
 /** Class representing a channel */
 export class Channel {
@@ -20,27 +24,26 @@ export class Channel {
 	static from(data: any, client: Client) {
 		switch(data.type) {
 			case 0:
-				return new GuildTextChannel(data, client);
-				break;
+				return new GuildTextChannel(data, client)
+				break
 			case 1:
-				return new DMChannel(data, client);
-				break;
+				return new DMChannel(data, client)
+				break
 			case 2:
-				return new GuildVoiceChannel(data, client);
-				break;
-			case 3:
-				//DMGroupChannel - BOTS can't join these. :(
-				break;
+				return new GuildVoiceChannel(data, client)
+				break
 			case 4:
-				return new GuildChannelCategory(data, client);
-				break;
+				return new GuildChannelCategory(data, client)
+				break
 			case 5:
-				return new GuildNewsChannel(data, client);
-				break;
+				return new GuildNewsChannel(data, client)
+				break
 			case 6:
-				return new GuildStoreChannel(data, client);
-				break;
+				return new GuildStoreChannel(data, client)
+				break
+			default:
+				return new Channel(data, client)
+				break
 		}
-		return new Channel(data, client);
 	}
 }
