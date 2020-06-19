@@ -4,8 +4,6 @@ import { GuildChannel } from "./GuildChannel.ts"
 import { TextChannel } from "./TextChannel.ts";
 import { use } from "../../deps.ts";
 
-export interface GuildTextChannel extends GuildChannel, TextChannel {}
-
 /**
  * Class representing a text channel in a guild
  * @extends GuildChannel

@@ -17,11 +17,11 @@ import Gateway from "./network/gateway/WebsocketHandler.ts"
  * Class representing the main client
  * @extends EventEmitter
  *
- *            import { Coward } from "https://deno.land/x/Client/mod.ts"
+ *            import { Coward } from "https://deno.land/x/coward@v0.2.1/mod.ts"
  *            const client = new Coward("TOKEN_GOES_HERE")
  *
- *            client.on("ready", () => {
- * 		            console.log("READY!")
+ *            client.evt.ready.attach(() => {
+ *                console.log("READY")
  *            })
  *
  *            client.connect()

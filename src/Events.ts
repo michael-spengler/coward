@@ -1,16 +1,14 @@
 import { Evt } from "../deps.ts";
 
-import {
-	Channel,
-	Guild,
-	GuildMember,
-	GuildEmoji,
-	ReactionCustomEmoji,
-	ReactionStandardEmoji,
-	Message,
-	User,
-	Role
-} from "./Classes.ts";
+import { Channel } from "./structures/Channel.ts"
+import { Guild } from "./structures/Guild.ts"
+import { GuildMember } from "./structures/GuildMember.ts"
+import { GuildEmoji } from "./structures/GuildEmoji.ts"
+import { ReactionCustomEmoji } from "./structures/ReactionCustomEmoji.ts"
+import { ReactionStandardEmoji } from "./structures/ReactionStandardEmoji.ts"
+import { Message } from "./structures/Message.ts"
+import { User } from "./structures/User.ts"
+import { Role } from "./structures/Role.ts"
 
 
 /** Fired when the client is ready. */

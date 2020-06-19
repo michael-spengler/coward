@@ -1,5 +1,5 @@
 import { Client } from "../Client.ts";
-import { ReactionStandardEmoji } from "../Classes.ts";
+import { ReactionStandardEmoji } from "./ReactionStandardEmoji.ts"
 
 /**
  * Class representing a custom reaction emoji

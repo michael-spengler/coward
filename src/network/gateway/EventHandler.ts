@@ -1,5 +1,12 @@
 import { Client } from "../../Client.ts"
-import { Guild, GuildMember, GuildEmoji, DMChannel, Message, User, Role, Channel } from "../../Classes.ts";
+import { Guild } from "../../structures/Guild.ts"
+import { GuildMember } from "../../structures/GuildMember.ts"
+import { GuildEmoji } from "../../structures/GuildEmoji.ts"
+import { DMChannel } from "../../structures/DMChannel.ts"
+import { Message } from "../../structures/Message.ts"
+import { User } from "../../structures/User.ts"
+import { Role } from "../../structures/Role.ts"
+import { Channel } from "../../structures/Channel.ts"
 
 export function handleEvent(client: Client, message: any) {
 	switch(message.t) {
@@ -62,8 +69,10 @@ export function handleEvent(client: Client, message: any) {
 		case "GUILD_EMOJIS_UPDATE": {
 			const guild = client.guilds.get(message.d.guild_id)
 			let emojis = new Array<GuildEmoji>()
-			for(const emoji of message.d.emojis) emojis.push(new GuildEmoji(emoji, client))
-			if(guild !== undefined) client.evt.guildEmojisUpdate.post({guild: guild, emojis: emojis})
+			if (guild == undefined) break
+
+			for(const emoji of message.d.emojis) emojis.push(new GuildEmoji(emoji, guild, client))
+			client.evt.guildEmojisUpdate.post({guild: guild, emojis: emojis})
 			break
 		}
 		case "GUILD_INTEGRATIONS_UPDATE": {
@@ -75,7 +84,7 @@ export function handleEvent(client: Client, message: any) {
 			let guild = client.guilds.get(message.d.guild_id)
 			if(guild == undefined) break
 
-			const member = new GuildMember(message.d, client)
+			const member = new GuildMember(message.d, guild, client)
 			guild.members.set(member.user.id, member)
 			client.guilds.set(guild.id, guild)
 
@@ -117,7 +126,7 @@ export function handleEvent(client: Client, message: any) {
 			let guild = client.guilds.get(message.d.guild_id)
 
 			if(guild == undefined) break
-			let role = new Role(message.d.role, client)
+			let role = new Role(message.d.role, guild, client)
 
 			guild.roles.set(role.id, role)
 			client.guilds.set(guild.id, guild)
@@ -129,12 +138,12 @@ export function handleEvent(client: Client, message: any) {
 		 	let guild = client.guilds.get(message.d.guild_id)
 
 			if(guild == undefined) break
-			let role = new Role(message.d.role, client)
+			let role = new Role(message.d.role, guild, client)
 
 			guild.roles.set(role.id, role)
 			client.guilds.set(guild.id, guild)
 
-			client.evt.guildRoleUpdate.post({guild: guild, role: new Role(message.d.role, client)})
+			client.evt.guildRoleUpdate.post({guild: guild, role: new Role(message.d.role, guild, client)})
 			break
 		}
 		case "GUILD_ROLE_DELETE":  {

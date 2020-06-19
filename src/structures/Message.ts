@@ -1,10 +1,8 @@
 import { Client } from "../Client.ts";
-import {
-	User,
-	GuildTextChannel,
-	DMChannel,
-	GuildNewsChannel,
-} from "../Classes.ts";
+import { User } from "./User.ts"
+import { GuildTextChannel } from "./GuildTextChannel.ts"
+import { DMChannel } from "./DMChannel.ts"
+import { GuildNewsChannel } from "./GuildNewsChannel.ts"
 
 /** Class representing a message */
 export class Message {
