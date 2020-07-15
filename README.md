@@ -12,7 +12,7 @@ Coward is a Deno module for easy interaction with the [Discord API](https://disc
 
 You must be using [Deno v1.0.2](https://github.com/denoland/deno/releases/tag/v1.0.2) or higher.
 ```typescript
-import { Client } from "https://deno.land/x/coward@v0.2.1/mod.ts";
+import { Client } from "https://deno.land/x/coward@v0.3.1/mod.ts";
 ```
 Please don't use this in anything important yet. It is barely functional, and as such is not production ready.
 Also note, coward uses [Evt](https://github.com/garronej/evt) for events. You can read the documentation for that [here](https://docs.evt.land).
@@ -20,7 +20,7 @@ Also note, coward uses [Evt](https://github.com/garronej/evt) for events. You ca
 ## Ping-Pong Example
 
 ```typescript
-import { Client } from "https://deno.land/x/coward@v0.3.0/mod.ts";
+import { Client } from "https://deno.land/x/coward@v0.3.1/mod.ts";
 
 let client = new Client("TOKEN");
 
