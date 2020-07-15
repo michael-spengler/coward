@@ -1,4 +1,4 @@
-import { Endpoints } from "./util/Constants.ts"
+import { Endpoints, Intents } from "./util/Constants.ts"
 
 import { Channel } from "./structures/Channel.ts"
 import { Guild } from "./structures/Guild.ts"
@@ -38,6 +38,18 @@ export class Client {
 
 	/** Create a Client */
 	public constructor(public token: string, public options: Options.clientConstructor = {}) {
+		if(this.options.intents !== undefined) {
+			let bitmask = 0;
+			if(this.options.intents instanceof Array) {
+				for(const intent of this.options.intents) {
+					bitmask |= intent
+				}
+			} else {
+				bitmask = this.options.intents
+			}
+			this.options.intents = bitmask
+		}
+
 		this.gateway = new Gateway(token, this)
 		this.requestHandler = new RequestHandler(this)
 	}
@@ -359,6 +371,7 @@ export class Client {
 /** Namespace for functions */
 export namespace Options {
 	export interface clientConstructor {
+		intents?: number[] | number
 	}
 
 	export interface modifyPresence {
