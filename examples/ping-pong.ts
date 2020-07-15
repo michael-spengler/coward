@@ -8,7 +8,7 @@ evt.ready.attach(() => console.log("READY!"))
 
 evt.messageCreate.attach(async ({ message }) => {
 	if(message.content == "!ping") {
-		client.postMessage(message.channel.id, "pong!");
+		await client.createMessage(message.channel.id, "pong!");
 	}
 })
 
