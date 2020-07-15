@@ -1,13 +1,6 @@
-import { Client } from "../Client.ts";
-import {
-	Channel,
-	Guild,
-	GuildTextChannel,
-	GuildVoiceChannel,
-	GuildChannelCategory,
-	GuildNewsChannel,
-	GuildStoreChannel
-} from "../Classes.ts";
+import { Client, Options } from "../Client.ts"
+import { Channel } from "./Channel.ts"
+import { Guild } from "./Guild.ts"
 
 /**
  * Class representing a channel in a guild
@@ -21,7 +14,7 @@ export class GuildChannel extends Channel {
 	//public permission_overwrites: Array<>; // TODO(fox-cat): this whole thing
 	protected _guildID: any;
 
-	constructor(data: any, protected client: Client) {
+	constructor(data: any, client: Client) {
 		super(data, client);
 
 		this.name = data.name;
@@ -33,29 +26,14 @@ export class GuildChannel extends Channel {
 	}
 
 	get guild(): Guild | undefined {
-		return this.client.guilds.get(this._guildID);
+		return this.client.guilds.get(this._guildID)
 	}
 
-	static from(data: any, client: Client) {
-		switch(data.type) {
-			case 0:
-				return new GuildTextChannel(data, client);
-				break;
-			case 2:
-				return new GuildVoiceChannel(data, client);
-				break;
-			case 4:
-				return new GuildChannelCategory(data, client);
-				break;
-			case 5:
-				return new GuildNewsChannel(data, client);
-				break;
-			case 6:
-				return new GuildStoreChannel(data, client);
-				break;
-			default:
-				return new GuildChannel(data, client);
-				break;
-		}
+	delete() {
+		return this.client.deleteChannel(this.id)
+	}
+
+	modify(options: Options.modifyChannel) {
+		return this.client.modifyChannel(this.id, options)
 	}
 }

@@ -20,7 +20,7 @@ Also note, coward uses [Evt](https://github.com/garronej/evt) for events. You ca
 ## Ping-Pong Example
 
 ```typescript
-import { Client } from "https://deno.land/x/coward@v0.2.1/mod.ts";
+import { Client } from "https://deno.land/x/coward@v0.3.0/mod.ts";
 
 let client = new Client("TOKEN");
 
@@ -28,7 +28,7 @@ client.evt.ready.attach(() => {console.log("READY!")});
 
 client.evt.messageCreate.attach(async ({message}) => {
   if(message.content == "!ping") {
-    await client.postMessage(message.channel.id, "Pong!");
+    await message.channel.createMessage("Pong!");
   }
 })
 

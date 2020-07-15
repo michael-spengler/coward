@@ -1,15 +1,14 @@
-import { Client } from "../Client.ts";
-import {
-	GuildChannel,
-	GuildTextChannel,
-	GuildVoiceChannel,
-	GuildChannelCategory,
-	GuildNewsChannel,
-	GuildStoreChannel,
-	GuildMember,
-	GuildEmoji,
-	Role
-} from "../Classes.ts";
+import { Client } from "../Client.ts"
+
+import { GuildChannel } from "./GuildChannel.ts"
+import { GuildTextChannel } from "./GuildTextChannel.ts"
+import { GuildVoiceChannel } from "./GuildVoiceChannel.ts"
+import { GuildChannelCategory } from "./GuildChannelCategory.ts"
+import { GuildNewsChannel } from "./GuildNewsChannel.ts"
+import { GuildStoreChannel } from "./GuildStoreChannel.ts"
+import { GuildMember } from "./GuildMember.ts"
+import { GuildEmoji } from "./GuildEmoji.ts"
+import { Role } from "./Role.ts"
 
 type GuildChannelTypes = GuildTextChannel | GuildVoiceChannel | GuildChannelCategory | GuildNewsChannel | GuildStoreChannel
 
@@ -44,19 +43,19 @@ export class Guild {
 
 		if(data.members) {
 			for(const mem of data.members) {
-				this.members.set(mem.user.id, new GuildMember(mem, client))
+				this.members.set(mem.user.id, new GuildMember(mem, this, client))
 			}
 		}
 
 		if(data.emojis) {
 			for(const e of data.emojis) {
-				this.emojis.set(e.id, new GuildEmoji(e, client))
+				this.emojis.set(e.id, new GuildEmoji(e, this, client))
 			}
 		}
 
 		if(data.roles) {
 			for(const role of data.roles) {
-				this.roles.set(role.id, new Role(role, client))
+				this.roles.set(role.id, new Role(role, this, client))
 			}
 		}
 	}

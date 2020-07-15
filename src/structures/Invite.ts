@@ -1,4 +1,6 @@
-import { Channel, User, Guild } from "../Classes.ts";
+import { Channel } from "./Channel.ts"
+import { Guild } from "./Guild.ts"
+import { User } from "./User.ts"
 import { Client } from "../Client.ts";
 
 export class Invite {
