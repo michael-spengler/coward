@@ -84,6 +84,7 @@ export default class Gateway {
 			op: 2,
 			d: {
 				token: this.token,
+				intents: this.client.options.intents,
 				properties: {
 					"$os": "linux",
 					"$browser": "coward",
