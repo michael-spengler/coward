@@ -1,6 +1,6 @@
 import { Client, Intents } from "https://deno.land/x/coward@dev/mod.ts";
 
-let client = new Client(
+const client = new Client(
     "TOKEN",
     {
         intents: [

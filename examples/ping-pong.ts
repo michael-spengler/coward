@@ -1,6 +1,6 @@
 import { Client } from "https://deno.land/x/coward@dev/mod.ts";
 
-let client = new Client("TOKEN");
+const client = new Client("TOKEN");
 
 const evt = client.evt;
 

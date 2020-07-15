@@ -1,5 +1,4 @@
-export const Versions = { GATEWAY: 6, REST: 7, THIS: "v0.3.1" };
-
+export const Versions = { GATEWAY: 6, REST: 7, THIS: "v0.3.2" }
 export const Discord = {
 	API: "https://discord.com/api/v6",
 	CDN: "https://cdn.discordapp.com",
