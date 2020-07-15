@@ -20,7 +20,7 @@ Also note, coward uses [Evt](https://github.com/garronej/evt) for events. You ca
 ## Ping-Pong Example
 
 ```typescript
-import { Client } from "https://deno.land/x/coward@dev/mod.ts";
+import { Client } from "https://deno.land/x/coward@v0.3.0/mod.ts";
 
 let client = new Client("TOKEN");
 
