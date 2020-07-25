@@ -190,7 +190,9 @@ export class Client {
 
 	// TODO: putChannelPermissions ?
 
-	// TODO: createChannelInvite ?
+	createChannelInvite(channelID: string, inviteOptions?: {max_age?: number, max_uses?: number}): Promise<Invite> {
+		return this.requestHandler.request("POST", Endpoints.CHANNEL_INVITES(channelID), inviteOptions)
+	}
 
 	/** Get invites in a guild channel. Returns an array of Invite objects. Requires `MANAGE_CHANNELS` permission. */
 	getChannelInvites(channelID: string): Promise<Array<Invite>> {
