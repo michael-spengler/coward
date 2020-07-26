@@ -61,6 +61,11 @@ export class Client {
 		this.gateway.connect()
 	}
 
+	/** Disconnect to the Discord API */
+	disconnect() {
+		this.gateway.close();
+	}
+
 	modifyPresence(options: Options.modifyPresence = { status: "online" }): Promise<void> {
 		return this.gateway.modifyPresence(options)
 	}

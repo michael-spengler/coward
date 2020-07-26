@@ -76,7 +76,11 @@ export class Permission extends BitField {
 		super(permission)
 		this.flags = Permissions
 	}
-
+	/**
+	 * ```ts
+	 * role.has("ADMINISTRATOR")
+	 * ```
+	*/
 	has(permission: PermissionResolvable, checkAdmin: boolean = true) {
 		return (checkAdmin && super.has("ADMINISTRATOR") || super.has(permission))
 	}
