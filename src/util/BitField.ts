@@ -1,5 +1,6 @@
-export type BitFieldResolvable = string | BitField | number | BitFieldResolvable[]
+export type BitFieldResolvable = string | BitField | number | BitFieldResolvable[];
 
+/** Base class for places where the discord API uses bitfields  */
 export class BitField {
 	flags: Map<string, number>
 

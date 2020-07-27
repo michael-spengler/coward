@@ -4,6 +4,7 @@ import { Bucket } from "./Bucket.ts";
 
 export class RequestHandler {
 	private userAgent: string = `DiscordBot (https://github.com/fox-cat/coward), ${Versions.THIS}`;
+
 	private rateLimitBuckets = new Map<string, Bucket>();
 	public global = false;
 	public globalReset = 0;
