@@ -1,6 +1,6 @@
 export { Client } from "./src/Client.ts"
 export { Options } from "./src/Client.ts"
-export * as Evt from "./src/Events.ts"
+export * as Events from "./src/Events.ts"
 
 export { Channel } 					from "./src/structures/Channel.ts"
 export { DMChannel } 				from "./src/structures/DMChannel.ts"
