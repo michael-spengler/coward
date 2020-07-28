@@ -9,7 +9,7 @@ import { User } from "./structures/User.ts"
 import { Role } from "./structures/Role.ts"
 import { Invite } from "./structures/Invite.ts"
 
-import * as evt from "./Events.ts";
+import * as events from "./Events.ts";
 import { RequestHandler } from "./network/rest/RequestHandler.ts"
 import Gateway from "./network/gateway/WebsocketHandler.ts"
 
@@ -54,7 +54,7 @@ export class Client {
 		this.requestHandler = new RequestHandler(this)
 	}
 
-	public evt = evt;
+	public events = events;
 
 	/** Connect to the Discord API */
 	connect() {

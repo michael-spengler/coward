@@ -15,7 +15,6 @@ You must be using [Deno v1.0.2](https://github.com/denoland/deno/releases/tag/v1
 import { Client } from "https://deno.land/x/coward@v0.3.2/mod.ts";
 ```
 Please don't use this in anything important yet. It is barely functional, and as such is not production ready.
-Also note, coward uses [Evt](https://github.com/garronej/evt) for events. You can read the documentation for that [here](https://docs.evt.land).
 
 ## Ping-Pong Example
 
@@ -24,9 +23,9 @@ import { Client } from "https://deno.land/x/coward@v0.3.2/mod.ts";
 
 let client = new Client("TOKEN");
 
-client.evt.ready.attach(() => {console.log("READY!")});
+client.events.ready.on(() => {console.log("READY!")});
 
-client.evt.messageCreate.attach(async ({message}) => {
+client.events.messageCreate.on(async ({message}) => {
   if(message.content == "!ping") {
     await message.channel.createMessage("Pong!");
   }
