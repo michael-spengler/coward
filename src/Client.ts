@@ -61,6 +61,11 @@ export class Client {
 		this.gateway.connect()
 	}
 
+	/** Disconnect to the Discord API */
+	disconnect() {
+		this.gateway.close();
+	}
+
 	modifyPresence(options: Options.modifyPresence = { status: "online" }): Promise<void> {
 		return this.gateway.modifyPresence(options)
 	}
@@ -190,7 +195,9 @@ export class Client {
 
 	// TODO: putChannelPermissions ?
 
-	// TODO: createChannelInvite ?
+	createChannelInvite(channelID: string, inviteOptions?: {max_age?: number, max_uses?: number}): Promise<Invite> {
+		return this.requestHandler.request("POST", Endpoints.CHANNEL_INVITES(channelID), inviteOptions)
+	}
 
 	/** Get invites in a guild channel. Returns an array of Invite objects. Requires `MANAGE_CHANNELS` permission. */
 	getChannelInvites(channelID: string): Promise<Array<Invite>> {
