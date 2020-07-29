@@ -119,7 +119,6 @@ export class RequestHandler {
 				console.warn("Received a 429; :(");
 				bucket.applyHeadersToBucket(response.headers);
 			}
-			++attempts;
 		}
 		throw new Error(`Failed after ${attemptLimit} attempts.`);
 	}
