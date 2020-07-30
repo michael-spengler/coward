@@ -1,6 +1,6 @@
-import { fear } from "../../util/fear.ts";
+import { fear } from "../../util/Fear.ts";
 import { red } from "../../../deps.ts";
-import { Payload, OpCode } from "./payload.ts";
+import { Payload, OpCode } from "./Payload.ts";
 
 export interface HeartDelegate {
 	send(json: object): Promise<void>;

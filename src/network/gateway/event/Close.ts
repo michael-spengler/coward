@@ -1,4 +1,4 @@
-import { fear } from "../../../util/fear.ts";
+import { fear } from "../../../util/Fear.ts";
 
 export enum CloseEventCode {
 	UNKNOWN_ERROR = 4000,
