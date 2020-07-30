@@ -9,7 +9,6 @@ import {
 	GuildStoreChannel
 } from "../../mod.ts" 
 // This doesn't work unless I import them all from here.
-// I'm not sure why.
 
 /** Class representing a channel */
 export class Channel {

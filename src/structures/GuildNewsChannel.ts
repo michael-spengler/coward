@@ -1,16 +1,14 @@
 import { Client } from "../Client.ts"
 import { GuildChannel } from "./GuildChannel.ts"
 import { TextChannel } from "./TextChannel.ts"
-
-import { use } from "../../deps.ts"
+import { applyMixins } from "../util/Mixins.ts"
+import { Channel } from "./Channel.ts"
 
 /**
  * Class representing a news channel in a guild
  * @extends GuildChannel
  */
 export class GuildNewsChannel extends GuildChannel {
-	@use( TextChannel ) this: any // TODO: stop using decorators as they are currently expiremental...
-
 	public topic: string
 	public lastMessageID: string // TODO(fox-cat): contemplate message object here?
 
@@ -21,3 +19,6 @@ export class GuildNewsChannel extends GuildChannel {
 		this.lastMessageID = data.last_message_id || null
 	}
 }
+
+export interface GuildNewsChannel extends GuildChannel, TextChannel {}
+applyMixins(GuildNewsChannel, [TextChannel])

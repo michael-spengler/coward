@@ -1,15 +1,12 @@
 import { Client } from "../mod.ts";
+import { config } from "https://deno.land/x/dotenv/mod.ts";
 
-const configData = await Deno.readFile("./config.json");
-const decoder = new TextDecoder("utf-8");
-const configText = decoder.decode(configData);
-const config = JSON.parse(configText);
-const { token } = config;
+const { DISCORD_TOKEN } = config();
 
 Deno.test("Connects to discord and emits ready event", async () => {
-	const bot = new Client(token);
+	const bot = new Client(DISCORD_TOKEN);
 		
-	bot.evt.ready.attach(() => {
+	bot.events.ready.on(() => {
 		bot.disconnect();
 	});
 	
