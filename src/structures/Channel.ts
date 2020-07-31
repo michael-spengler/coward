@@ -6,7 +6,8 @@ import {
 	GuildVoiceChannel,
 	GuildChannelCategory,
 	GuildNewsChannel,
-	GuildStoreChannel
+	GuildStoreChannel,
+	PermissionOverwrite
 } from "../../mod.ts" 
 // This doesn't work unless I import them all from here.
 
@@ -17,7 +18,7 @@ export class Channel {
 
 	constructor(data: any, protected client: Client) {
 		this.id = data.id;
-		this.type = data.type;
+		this.type = data.type
 	}
 
 	static from(data: any, client: Client) {
