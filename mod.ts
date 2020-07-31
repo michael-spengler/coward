@@ -22,3 +22,7 @@ export { PermissionOverwrite } from "./src/structures/PermissionOverwrite.ts";
 
 export { Intents } from "./src/util/Constants.ts";
 export { Emitter } from "./src/util/Emitter.ts";
+
+export * from "./src/util/Permission.ts";
+export * from "./src/util/UserFlags.ts";
+export * from "./src/util/MessageFlags.ts";
