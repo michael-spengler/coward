@@ -1,5 +1,5 @@
-import { Client } from "../Client.ts";
-
+import { GuildChannelClient, GuildChannelHandler } from "./GuildChannel.ts";
+import { Messages } from "./Handlers.ts";
 import {
   GuildTextChannel,
   DMChannel,
@@ -15,34 +15,32 @@ export class Channel {
   public id: string;
   public type: number;
 
-  constructor(data: any, protected client: Client) {
+  constructor(data: any, protected readonly __messages: Messages) {
+    // TODO: Move `__messages` to TextChannelMixIn (but I don't know how to do).
     this.id = data.id;
     this.type = data.type;
   }
 
-  static from(data: any, client: Client) {
+  static from(
+    data: any,
+    client: GuildChannelClient,
+    handler: GuildChannelHandler,
+  ) {
     switch (data.type) {
       case 0:
-        return new GuildTextChannel(data, client);
-        break;
+        return new GuildTextChannel(data, client, handler);
       case 1:
-        return new DMChannel(data, client);
-        break;
+        return new DMChannel(data, handler);
       case 2:
-        return new GuildVoiceChannel(data, client);
-        break;
+        return new GuildVoiceChannel(data, client, handler);
       case 4:
-        return new GuildChannelCategory(data, client);
-        break;
+        return new GuildChannelCategory(data, client, handler);
       case 5:
-        return new GuildNewsChannel(data, client);
-        break;
+        return new GuildNewsChannel(data, client, handler);
       case 6:
-        return new GuildStoreChannel(data, client);
-        break;
+        return new GuildStoreChannel(data, client, handler);
       default:
-        return new Channel(data, client);
-        break;
+        return new Channel(data, handler);
     }
   }
 }

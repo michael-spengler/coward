@@ -1,4 +1,3 @@
-import { Client } from "../Client.ts";
 import { GuildChannel } from "./GuildChannel.ts";
 
 /**
@@ -6,7 +5,4 @@ import { GuildChannel } from "./GuildChannel.ts";
  * @extends GuildChannel
  */
 export class GuildStoreChannel extends GuildChannel {
-  constructor(data: any, protected client: Client) {
-    super(data, client);
-  }
 }

@@ -1,7 +1,18 @@
-import { Client, Options } from "../Client.ts";
+import { ModifyChannel } from "./Options.ts";
 import { Channel } from "./Channel.ts";
 import { Guild } from "./Guild.ts";
 import { PermissionOverwrite } from "./PermissionOverwrite.ts";
+import {
+  GuildChannelAssociation,
+  Guilds,
+} from "./Delegates.ts";
+import { Messages, Channels } from "./Handlers.ts";
+
+export type GuildChannelClient =
+  & Guilds
+  & GuildChannelAssociation;
+
+export type GuildChannelHandler = Messages & Channels;
 
 /**
  * Class representing a channel in a guild
@@ -13,33 +24,37 @@ export class GuildChannel extends Channel {
   public nsfw: boolean;
   public parentID: string; // TODO(fox-cat): channel category object ????
   public permission_overwrites: Map<string, PermissionOverwrite>;
-  protected _guildID: any;
+  protected _guildID: string | undefined;
 
-  constructor(data: any, client: Client) {
-    super(data, client);
+  constructor(
+    data: any,
+    private readonly client: GuildChannelClient,
+    private readonly handler: GuildChannelHandler,
+  ) {
+    super(data, handler);
 
     this.name = data.name;
     this.position = data.position;
     this.nsfw = data.nsfw;
     this.parentID = data.parent_id || null;
-    this._guildID = client.channelGuildIDs.get(this.id);
+    this._guildID = client.getGuildId(this.id);
 
     this.permission_overwrites = new Map<string, PermissionOverwrite>();
     for (const permission_overwrite of data.permission_overwrites) {
-      const perms = new PermissionOverwrite(permission_overwrite, client);
+      const perms = new PermissionOverwrite(permission_overwrite);
       this.permission_overwrites.set(perms.id, perms);
     }
   }
 
   get guild(): Guild | undefined {
-    return this.client.guilds.get(this._guildID);
+    return this.client.getGuild(this._guildID ?? "");
   }
 
   delete() {
-    return this.client.deleteChannel(this.id);
+    return this.handler.deleteChannel(this.id);
   }
 
-  modify(options: Options.modifyChannel) {
-    return this.client.modifyChannel(this.id, options);
+  modify(options: ModifyChannel) {
+    return this.handler.modifyChannel(this.id, options);
   }
 }

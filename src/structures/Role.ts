@@ -1,6 +1,7 @@
-import { Client, Options } from "../Client.ts";
+import { ModifyRole } from "./Options.ts";
 import { Guild } from "./Guild.ts";
 import { Permission } from "../util/Permission.ts";
+import { Roles } from "./Handlers.ts";
 
 /** Class representing a Role */
 export class Role {
@@ -13,7 +14,7 @@ export class Role {
   public permissions: Permission;
   public position: number;
 
-  constructor(data: any, public guild: Guild, protected client: Client) {
+  constructor(data: any, public guild: Guild, private readonly handler: Roles) {
     this.permissions = new Permission(data.permissions);
     this.id = data.id;
     this.name = data.name;
@@ -25,10 +26,10 @@ export class Role {
   }
 
   delete() {
-    return this.client.deleteRole(this.guild.id, this.id);
+    return this.handler.deleteRole(this.guild.id, this.id);
   }
 
-  modify(options: Options.modifyRole) {
-    return this.client.modifyRole(this.guild.id, this.id, options);
+  modify(options: ModifyRole) {
+    return this.handler.modifyRole(this.guild.id, this.id, options);
   }
 }
