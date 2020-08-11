@@ -1,14 +1,14 @@
 import { User } from "./User.ts";
 import { TextChannelMixIn } from "./TextChannel.ts";
 import { Channel } from "./Channel.ts";
-import { Messages } from "./Handlers.ts";
+import type { Messages } from "./Handlers.ts";
 
 /**
  * Class representing a DM channel
  * @extends Channel
  */
 export class DMChannel extends TextChannelMixIn(Channel) {
-  public recipients: Array<User>;
+  public readonly recipients: Array<User>;
 
   constructor(data: any, client: Messages) {
     super(data, client);

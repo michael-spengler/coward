@@ -1,10 +1,10 @@
 import { Endpoints } from "../../util/Constants.ts";
 
 import { Message } from "../../structures/Message.ts";
-import { Messages } from "../../structures/Handlers.ts";
-import { CreateMessage, ModifyMessage } from "../../structures/Options.ts";
-import { RequestHandler } from "../../network/rest/RequestHandler.ts";
-import { Database } from "../Database.ts";
+import type { Messages } from "../../structures/Handlers.ts";
+import type { CreateMessage, ModifyMessage } from "../../structures/Options.ts";
+import type { RequestHandler } from "../../network/rest/RequestHandler.ts";
+import type { Database } from "../Database.ts";
 
 export class MessagesRequester implements Messages {
   constructor(
@@ -15,7 +15,7 @@ export class MessagesRequester implements Messages {
   /** Post a message in a channel. Requires the `SEND_MESSAGES` permission.*/
   async createMessage(
     channelID: string,
-    content: string | CreateMessage,
+    content: string | Readonly<CreateMessage>,
   ): Promise<Message> {
     if (typeof content === "string") content = { content: content };
     const data = await this.requestHandler.request(
@@ -32,7 +32,7 @@ export class MessagesRequester implements Messages {
     channelID: string,
     /** Message to modify */
     messageID: string,
-    content: string | ModifyMessage,
+    content: string | Readonly<ModifyMessage>,
   ): Promise<Message> {
     if (typeof content === "string") content = { content: content };
     const data = await this.requestHandler.request(

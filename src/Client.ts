@@ -1,5 +1,5 @@
 import * as events from "./Events.ts";
-import { Requester } from "./util/Requester.ts";
+import type { Requester } from "./util/Requester.ts";
 import { ActualRequester } from "./util/ActualRequester.ts";
 
 /**
@@ -19,7 +19,7 @@ export class Client {
   private readonly requester: Requester;
   private connectionTask: Promise<void> | null = null;
 
-  public events = events;
+  public readonly events = events;
 
   /** Create a Client */
   public constructor(

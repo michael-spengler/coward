@@ -1,18 +1,18 @@
-import { ModifyRole } from "./Options.ts";
-import { Guild } from "./Guild.ts";
+import type { ModifyRole } from "./Options.ts";
+import type { Guild } from "./Guild.ts";
 import { Permission } from "../util/Permission.ts";
-import { Roles } from "./Handlers.ts";
+import type { Roles } from "./Handlers.ts";
 
 /** Class representing a Role */
 export class Role {
-  public id: string;
-  public name: string;
-  public color: number;
-  public hoist: boolean;
-  public managed: boolean;
-  public mentionable: boolean;
-  public permissions: Permission;
-  public position: number;
+  public readonly id: string;
+  public readonly name: string;
+  public readonly color: number;
+  public readonly hoist: boolean;
+  public readonly managed: boolean;
+  public readonly mentionable: boolean;
+  public readonly permissions: Permission;
+  public readonly position: number;
 
   constructor(data: any, public guild: Guild, private readonly handler: Roles) {
     this.permissions = new Permission(data.permissions);

@@ -1,13 +1,13 @@
 import { RoleEventSubscriber, handleRoleEvent } from "./guild/Role.ts";
 import { MemberEventSubscriber, handleMemberEvent } from "./guild/Member.ts";
-import { Payload } from "../../Payload.ts";
+import type { Payload } from "../../Payload.ts";
 import {
   Guild,
   GuildClient,
   GuildHandler,
 } from "../../../../structures/Guild.ts";
-import { User } from "../../../../structures/User.ts";
-import { Emitter } from "../../../../util/Emitter.ts";
+import type { User } from "../../../../structures/User.ts";
+import type { Emitter } from "../../../../util/Emitter.ts";
 import { GuildEmoji } from "../../../../structures/GuildEmoji.ts";
 
 export interface GuildEventSubscriber
@@ -28,11 +28,11 @@ export interface GuildEventSubscriber
 
 export function handleGuildEvent(
   message: Payload,
-  delegates: {
+  delegates: Readonly<{
     client: GuildClient;
     handler: GuildHandler;
     subscriber: GuildEventSubscriber;
-  },
+  }>,
 ) {
   if (message.t.startsWith("GUILD_MEMBER_")) {
     handleMemberEvent(message, delegates);

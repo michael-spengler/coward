@@ -1,23 +1,23 @@
 import { Role } from "./Role.ts";
 import { User } from "./User.ts";
-import { Guild } from "./Guild.ts";
-import { Roles } from "./Handlers.ts";
+import type { Guild } from "./Guild.ts";
+import type { Roles } from "./Handlers.ts";
 
 /** Class representing an emoji in a guild */
 export class GuildEmoji {
-  public id: string;
-  public name: string;
-  public roles: Map<string, Role> = new Map<string, Role>();
+  public readonly id: string;
+  public readonly name: string;
+  public readonly roles: Map<string, Role> = new Map<string, Role>();
   /** User that created the emoji */
-  public user!: User;
-  public requireColons: boolean;
+  public readonly user!: User;
+  public readonly requireColons: boolean;
   /** Whether the emoji is managed */
-  public managed: boolean;
-  public animated: boolean;
+  public readonly managed: boolean;
+  public readonly animated: boolean;
   /** Whether the emoji is available - may be false due to loss of server boosts. */
-  public available: boolean;
+  public readonly available: boolean;
 
-  constructor(data: any, public guild: Guild, client: Roles) {
+  constructor(data: any, public readonly guild: Guild, client: Roles) {
     this.id = data.id;
     this.name = data.name;
     if (data.roles) {

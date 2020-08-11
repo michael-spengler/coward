@@ -1,20 +1,20 @@
 import { User } from "./User.ts";
-import { Guild } from "./Guild.ts";
-import { Role } from "./Role.ts";
+import type { Guild } from "./Guild.ts";
+import type { Role } from "./Role.ts";
 import { Permission } from "../util/Permission.ts";
 
 /** Class representing a guild member */
 export class GuildMember {
-  public user: User;
-  public nick!: string;
-  public roles: Map<string, Role>; // TODO(fox-cat): role objects
-  public joinedAt: string;
-  public premiumSince!: string;
-  public deaf: boolean;
-  public mute: boolean;
-  public permissions: Permission;
+  public readonly user: User;
+  public readonly nick!: string;
+  public readonly roles: Map<string, Role>; // TODO(fox-cat): role objects
+  public readonly joinedAt: string;
+  public readonly premiumSince!: string;
+  public readonly deaf: boolean;
+  public readonly mute: boolean;
+  public readonly permissions: Permission;
 
-  constructor(data: any, public guild: Guild) {
+  constructor(data: any, public readonly guild: Guild) {
     this.user = new User(data.user);
     this.nick = data.nick || null;
 

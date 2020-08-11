@@ -1,5 +1,8 @@
-import { GuildChannelClient, GuildChannelHandler } from "./GuildChannel.ts";
-import { Messages } from "./Handlers.ts";
+import type {
+  GuildChannelClient,
+  GuildChannelHandler,
+} from "./GuildChannel.ts";
+import type { Messages } from "./Handlers.ts";
 import {
   GuildTextChannel,
   DMChannel,
@@ -12,8 +15,8 @@ import {
 
 /** Class representing a channel */
 export class Channel {
-  public id: string;
-  public type: number;
+  public readonly id: string;
+  public readonly type: number;
 
   constructor(data: any, protected readonly __messages: Messages) {
     // TODO: Move `__messages` to TextChannelMixIn (but I don't know how to do).

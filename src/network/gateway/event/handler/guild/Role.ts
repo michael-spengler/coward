@@ -1,9 +1,9 @@
-import { Payload } from "../../../Payload.ts";
-import { Guild } from "../../../../../structures/Guild.ts";
+import type { Payload } from "../../../Payload.ts";
+import type { Guild } from "../../../../../structures/Guild.ts";
 import { Role } from "../../../../../structures/Role.ts";
-import { Emitter } from "../../../../../util/Emitter.ts";
-import { Roles } from "../../../../../structures/Handlers.ts";
-import { Guilds } from "../../../../../structures/Delegates.ts";
+import type { Emitter } from "../../../../../util/Emitter.ts";
+import type { Roles } from "../../../../../structures/Handlers.ts";
+import type { Guilds } from "../../../../../structures/Delegates.ts";
 
 export interface RoleEventSubscriber {
   guildRoleCreate: Emitter<{ guild: Guild; role: Role }>;
@@ -13,11 +13,11 @@ export interface RoleEventSubscriber {
 
 export function handleRoleEvent(
   message: Payload,
-  { handler, subscriber, client }: {
+  { handler, subscriber, client }: Readonly<{
     handler: Roles;
     subscriber: RoleEventSubscriber;
     client: Guilds;
-  },
+  }>,
 ) {
   switch (message.t) {
     case "GUILD_ROLE_CREATE": {

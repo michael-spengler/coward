@@ -6,13 +6,13 @@ import {
 } from "../../../deps.ts";
 import { fear } from "../../util/Fear.ts";
 import { Heart } from "./Heart.ts";
-import { ModifyPresence } from "../../structures/Options.ts";
+import type { ModifyPresence } from "../../structures/Options.ts";
 import { handleEvent, EventSubscriber } from "./event/EventHandler.ts";
 import { Discord, Versions } from "../../util/Constants.ts";
 import { OpCode, Payload } from "./Payload.ts";
 import { newCloseEvent, CloseEventCode } from "./event/Close.ts";
-import { GuildClient, GuildHandler } from "../../structures/Guild.ts";
-import { MessageClient } from "../../structures/Message.ts";
+import type { GuildClient, GuildHandler } from "../../structures/Guild.ts";
+import type { MessageClient } from "../../structures/Message.ts";
 
 export default class Gateway {
   private sock!: WebSocket;
@@ -22,7 +22,7 @@ export default class Gateway {
   private sessionID = "";
   private status = "connecting";
 
-  private heart: Heart;
+  private readonly heart: Heart;
 
   get ping(): number {
     return this._ping;

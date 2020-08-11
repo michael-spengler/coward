@@ -1,4 +1,4 @@
-import { Message } from "./Message.ts";
+import type { Message } from "./Message.ts";
 import {
   GuildChannel,
   GuildChannelClient,
@@ -11,10 +11,10 @@ import { TextChannelMixIn } from "./TextChannel.ts";
  * @extends GuildChannel
  */
 export class GuildTextChannel extends TextChannelMixIn(GuildChannel) {
-  public rateLimitPerUser: number;
-  public topic: string;
+  public readonly rateLimitPerUser: number;
+  public readonly topic: string;
 
-  public messages: Map<string, Message> = new Map<string, Message>();
+  public readonly messages: Map<string, Message> = new Map<string, Message>();
   // TODO: deal with messages. possible message limit from client options?
   // contemplate. ^_^
 

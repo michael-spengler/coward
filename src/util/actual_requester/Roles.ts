@@ -1,14 +1,14 @@
 import { Endpoints } from "../../util/Constants.ts";
 
 import { Role } from "../../structures/Role.ts";
-import { Roles } from "../../structures/Handlers.ts";
-import {
+import type { Roles } from "../../structures/Handlers.ts";
+import type {
   ModifyRole,
   CreateRole,
 } from "../../structures/Options.ts";
 
-import { RequestHandler } from "../../network/rest/RequestHandler.ts";
-import { Database } from "../Database.ts";
+import type { RequestHandler } from "../../network/rest/RequestHandler.ts";
+import type { Database } from "../Database.ts";
 
 export class RolesRequester implements Roles {
   constructor(
@@ -19,7 +19,7 @@ export class RolesRequester implements Roles {
   /** Create a role in a guild. Requires `MANAGE_ROLES` permission. */
   async createRole(
     guildID: string,
-    options: CreateRole,
+    options: Readonly<CreateRole>,
   ): Promise<Role> {
     const data = await this.requestHandler.request(
       "POST",
@@ -40,7 +40,7 @@ export class RolesRequester implements Roles {
   async modifyRole(
     guildID: string,
     roleID: string,
-    options: ModifyRole,
+    options: Readonly<ModifyRole>,
   ): Promise<Role> {
     const data = await this.requestHandler.request(
       "PATCH",

@@ -1,22 +1,26 @@
 import { User } from "./User.ts";
-import { GuildTextChannel } from "./GuildTextChannel.ts";
-import { DMChannel } from "./DMChannel.ts";
-import { GuildNewsChannel } from "./GuildNewsChannel.ts";
+import type { GuildTextChannel } from "./GuildTextChannel.ts";
+import type { DMChannel } from "./DMChannel.ts";
+import type { GuildNewsChannel } from "./GuildNewsChannel.ts";
 import { MessageFlag } from "../util/MessageFlags.ts";
-import { GuildMember } from "./GuildMember.ts";
-import { Guilds, GuildChannelAssociation, DMChannels } from "./Delegates.ts";
+import type { GuildMember } from "./GuildMember.ts";
+import type {
+  Guilds,
+  GuildChannelAssociation,
+  DMChannels,
+} from "./Delegates.ts";
 
 export type MessageClient = Guilds & GuildChannelAssociation & DMChannels;
 
 /** Class representing a message */
 export class Message {
-  public id: string;
-  public content: string;
-  public channel: GuildTextChannel | DMChannel | GuildNewsChannel;
-  public author: User;
-  public member?: GuildMember;
-  public timestamp: string;
-  public flags: MessageFlag;
+  public readonly id: string;
+  public readonly content: string;
+  public readonly channel: GuildTextChannel | DMChannel | GuildNewsChannel;
+  public readonly author: User;
+  public readonly member?: GuildMember;
+  public readonly timestamp: string;
+  public readonly flags: MessageFlag;
 
   constructor(
     data: any,

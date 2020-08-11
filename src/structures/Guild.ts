@@ -1,17 +1,17 @@
 import { GuildChannel, GuildChannelClient } from "./GuildChannel.ts";
-import { GuildTextChannel } from "./GuildTextChannel.ts";
-import { GuildVoiceChannel } from "./GuildVoiceChannel.ts";
-import { GuildChannelCategory } from "./GuildChannelCategory.ts";
-import { GuildNewsChannel } from "./GuildNewsChannel.ts";
-import { GuildStoreChannel } from "./GuildStoreChannel.ts";
+import type { GuildTextChannel } from "./GuildTextChannel.ts";
+import type { GuildVoiceChannel } from "./GuildVoiceChannel.ts";
+import type { GuildChannelCategory } from "./GuildChannelCategory.ts";
+import type { GuildNewsChannel } from "./GuildNewsChannel.ts";
+import type { GuildStoreChannel } from "./GuildStoreChannel.ts";
 import { GuildMember } from "./GuildMember.ts";
 import { GuildEmoji } from "./GuildEmoji.ts";
 import { Role } from "./Role.ts";
-import {
+import type {
   GuildChannelAssociation,
   Guilds,
 } from "./Delegates.ts";
-import { Roles, Messages, Channels } from "./Handlers.ts";
+import type { Roles, Messages, Channels } from "./Handlers.ts";
 
 type GuildChannelTypes =
   | GuildTextChannel
@@ -32,22 +32,28 @@ export type GuildHandler =
 
 /** Class representing a guild */
 export class Guild {
-  public id: string;
-  public name: string;
-  public ownerID: string;
-  public region: string;
+  public readonly id: string;
+  public readonly name: string;
+  public readonly ownerID: string;
+  public readonly region: string;
 
   /** A map of guild channels. */
-  public channels: Map<string, GuildChannelTypes | any> = new Map<
+  public readonly channels: Map<string, GuildChannelTypes | any> = new Map<
     string,
     GuildChannelTypes | any
   >();
   /** A map of members */
-  public members: Map<string, GuildMember> = new Map<string, GuildMember>();
+  public readonly members: Map<string, GuildMember> = new Map<
+    string,
+    GuildMember
+  >();
   /** A map of emoji */
-  public emojis: Map<string, GuildEmoji> = new Map<string, GuildEmoji>();
+  public readonly emojis: Map<string, GuildEmoji> = new Map<
+    string,
+    GuildEmoji
+  >();
   /** A map of guild roles */
-  public roles: Map<string, Role> = new Map<string, Role>();
+  public readonly roles: Map<string, Role> = new Map<string, Role>();
 
   constructor(data: any, client: GuildClient, handler: GuildHandler) {
     this.id = data.id;
