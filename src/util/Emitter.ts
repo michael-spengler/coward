@@ -1,8 +1,8 @@
-export interface Listener<T> {
-  (event: T): any;
+export interface Listener<T extends object> {
+  (event: T): void;
 }
 
-export class Emitter<T> {
+export class Emitter<T extends object = {}> {
   private readonly listeners: Listener<T>[] = [];
 
   on = (listener: Listener<T>) => {

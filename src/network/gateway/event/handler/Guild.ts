@@ -3,7 +3,7 @@ import { MemberEventSubscriber, handleMemberEvent } from "./guild/Member.ts";
 import type { Payload } from "../../Payload.ts";
 import {
   Guild,
-  GuildClient,
+  GuildCache,
   GuildHandler,
 } from "../../../../structures/Guild.ts";
 import type { User } from "../../../../structures/User.ts";
@@ -30,7 +30,7 @@ export interface GuildEventSubscriber
 export function handleGuildEvent(
   message: Payload,
   delegates: Readonly<{
-    client: GuildClient;
+    cache: GuildCache;
     handler: GuildHandler;
     subscriber: GuildEventSubscriber;
   }>,
@@ -43,30 +43,27 @@ export function handleGuildEvent(
     handleRoleEvent(message, delegates);
     return;
   }
-  const { client, handler, subscriber } = delegates;
+  const { cache, handler, subscriber } = delegates;
   const type = message.t;
   switch (type) {
-    case "GUILD_CREATE": {
-      const guild = new Guild(message.d, client, handler);
-      client.setGuild(guild.id, guild);
-      subscriber.guildCreate.emit({ guild: guild });
+    case "GUILD_CREATE":
+      subscriber.guildCreate.emit(
+        { guild: new Guild(message.d, cache, handler) },
+      );
       return;
-    }
-    case "GUILD_UPDATE": {
-      const guild = new Guild(message.d, client, handler);
-      client.setGuild(guild.id, guild);
-      subscriber.guildUpdate.emit({ guild });
+    case "GUILD_UPDATE":
+      subscriber.guildUpdate.emit(
+        { guild: new Guild(message.d, cache, handler) },
+      );
       return;
-    }
-    case "GUILD_DELETE": {
-      const guild = new Guild(message.d, client, handler);
-      client.deleteGuild(guild.id);
-      subscriber.guildDelete.emit({ guild: guild });
+    case "GUILD_DELETE":
+      subscriber.guildDelete.emit(
+        { guild: new Guild(message.d, cache, handler) },
+      );
       return;
-    }
     case "GUILD_BAN_ADD": {
       const data = message.d as { guild_id: string; user: User };
-      const guild = client.getGuild(data.guild_id);
+      const guild = cache.getGuild(data.guild_id);
       if (guild == null) return;
       subscriber.guildBanAdd.emit(
         { guild: guild, user: data.user },
@@ -75,7 +72,7 @@ export function handleGuildEvent(
     }
     case "GUILD_BAN_REMOVE": {
       const data = message.d as { guild_id: string; user: User };
-      const guild = client.getGuild(data.guild_id);
+      const guild = cache.getGuild(data.guild_id);
       if (guild == null) return;
       subscriber.guildBanRemove.emit(
         { guild: guild, user: data.user },
@@ -84,7 +81,7 @@ export function handleGuildEvent(
     }
     case "GUILD_EMOJIS_UPDATE": {
       const data = message.d as { guild_id: string; emojis: unknown[] };
-      const guild = client.getGuild(data.guild_id);
+      const guild = cache.getGuild(data.guild_id);
       if (guild == null) return;
 
       const emojis = new Array<GuildEmoji>(
@@ -95,7 +92,7 @@ export function handleGuildEvent(
     }
     case "GUILD_INTEGRATIONS_UPDATE": {
       const data = message.d as { guild_id: string };
-      const guild = client.getGuild(data.guild_id);
+      const guild = cache.getGuild(data.guild_id);
       if (guild == null) return;
       subscriber.guildIntegrationsUpdate.emit({ guild: guild });
       return;
