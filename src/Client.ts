@@ -1,6 +1,12 @@
 import { Events } from "./Events.ts";
 import type { Requester } from "./util/Requester.ts";
 import { ActualRequester } from "./util/ActualRequester.ts";
+import {
+  Intents,
+  IntentsKey,
+  EventsByIntents,
+  eventsByIntents,
+} from "./structures/Intents.ts";
 
 /**
  * Class representing the main client
@@ -15,26 +21,28 @@ import { ActualRequester } from "./util/ActualRequester.ts";
  *
  *            client.connect()
  */
-export class Client {
+export class Client<K extends IntentsKey> {
   private readonly requester: Requester;
   private connectionTask: Promise<void> | null = null;
 
   public readonly events = new Events();
+  /** Events by specified intents  */
+  public readonly eventsByIntents: EventsByIntents<K>;
 
   /** Create a Client */
   public constructor(
     public token: string,
-    public options: { intents?: number[] | number } = {},
+    public options: { intents?: K[] } = {},
   ) {
-    if (this.options.intents !== undefined) {
-      this.options.intents = (Array.isArray(this.options.intents))
-        ? this.options.intents.reduce((prev, intent) => prev | intent, 0)
-        : this.options.intents;
-    }
-
-    this.requester = new ActualRequester(
-      { token, subscriber: this.events, intents: this.options.intents },
-    );
+    const intents = this.options.intents && new Intents(this.options.intents);
+    this.requester = new ActualRequester({
+      token,
+      subscriber: this.events,
+      intents: intents?.bitfield,
+    });
+    this.eventsByIntents = intents
+      ? eventsByIntents(this.events, ...(intents.toArray() as K[]))
+      : {} as EventsByIntents<K>;
   }
 
   /** Connect to the Discord API */
