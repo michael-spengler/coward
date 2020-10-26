@@ -1,0 +1,10 @@
+{
+                                "name": "coward",
+                                "description": "🐔 Coward is a Deno module for easy interaction with the Discord API.",
+                                "homepage": "https://github.com/itjk/coward",
+                                "files": [
+                                  "./**/*.ts",
+                                  "README.md"
+                                ],
+                                "entry": "./mod.ts"
+                              }
